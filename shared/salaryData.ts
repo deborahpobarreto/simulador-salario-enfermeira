@@ -304,3 +304,80 @@ export const INSALUBRITY_SECTORS = {
   general: "Setores Gerais",
   specific: "Setores Específicos",
 } as const;
+
+/**
+ * Cálculo de Letra Inicial baseado em Tempo de Serviço Anterior
+ * Lei Complementar 323/2006, Art. 33
+ * A cada 2 anos de serviço anterior, sobe uma letra
+ */
+export const LETTERS_ARRAY = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const;
+
+export function calculateInitialLetter(yearsOfPreviousService: number): string {
+  const lettersToAdvance = Math.floor(yearsOfPreviousService / 2);
+  const initialLetterIndex = Math.min(lettersToAdvance, LETTERS_ARRAY.length - 1);
+  return LETTERS_ARRAY[initialLetterIndex];
+}
+
+/**
+ * Projeção de Carreira
+ * Calcula progressão horizontal (letra) e vertical (nível) ao longo dos anos
+ */
+export interface CareerProjection {
+  year: number;
+  level: number;
+  letter: string;
+  yearsInPosition: number;
+  totalYearsOfService: number;
+  description: string;
+}
+
+export function projectCareer(
+  startingLevel: number,
+  startingLetter: string,
+  yearsOfPreviousService: number,
+  yearsToProject: number
+): CareerProjection[] {
+  const projections: CareerProjection[] = [];
+  let currentLevel = startingLevel;
+  let currentLetterIndex = LETTERS_ARRAY.indexOf(startingLetter as any);
+  let totalYearsOfService = yearsOfPreviousService;
+
+  for (let year = 0; year <= yearsToProject; year++) {
+    const yearsInPosition = year;
+    totalYearsOfService = yearsOfPreviousService + year;
+
+    // Progressão Vertical: a cada 5 anos de serviço total, sobe um nível (com 120h capacitação)
+    // Simplificado: a cada 5 anos
+    const levelAdvance = Math.floor(totalYearsOfService / 5);
+    currentLevel = Math.min(startingLevel + levelAdvance, 16);
+
+    // Progressão Horizontal: a cada 2 anos sobe uma letra
+    currentLetterIndex = Math.min(
+      LETTERS_ARRAY.indexOf(startingLetter as any) + Math.floor(yearsInPosition / 2),
+      LETTERS_ARRAY.length - 1
+    );
+
+    const currentLetter = LETTERS_ARRAY[currentLetterIndex];
+
+    let description = `Ano ${year}`;
+    if (year === 0) {
+      description = "Entrada (com tempo anterior aproveitado)";
+    } else if (year % 2 === 0 && year > 0) {
+      description = `Progressão Horizontal: Letra ${currentLetter}`;
+    }
+    if (levelAdvance > 0 && year > 0 && year % 5 === 0) {
+      description = `Progressão Vertical: Nível ${currentLevel} (com 120h capacitação)`;
+    }
+
+    projections.push({
+      year,
+      level: currentLevel,
+      letter: currentLetter,
+      yearsInPosition,
+      totalYearsOfService,
+      description,
+    });
+  }
+
+  return projections;
+}

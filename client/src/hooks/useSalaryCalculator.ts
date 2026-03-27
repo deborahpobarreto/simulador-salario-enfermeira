@@ -13,7 +13,8 @@ export interface SalaryCalculatorInput {
   letter: string; // A-J
   
   // Tempo de serviço
-  yearsOfService: number;
+  yearsOfPreviousService: number; // Tempo anterior como servidor público
+  yearsOfService: number; // Tempo na posição atual
   
   // Período para cálculo de gratificação
   performancePeriod: "before_may_2025" | "may_to_december_2025" | "after_december_2025";
