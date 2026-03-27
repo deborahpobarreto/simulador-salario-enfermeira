@@ -195,28 +195,31 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     // Férias com 1/3 (Art. 21)
     const vacationWithThirds = monthlyGrossSalary * VACATION_THIRDS_PERCENTAGE;
 
+    // Função para arredondar para 2 casas decimais
+    const round = (value: number) => Math.round(value * 100) / 100;
+
     // Cálculo de Impostos
-    const inss = calculateINSS(monthlyGrossSalary);
-    const irrf = calculateIRRF(monthlyGrossSalary, input.dependents);
-    const totalDeductions = inss + irrf;
-    const netSalary = monthlyGrossSalary - totalDeductions;
-    const effectiveTaxRate = (totalDeductions / monthlyGrossSalary) * 100;
+    const inss = round(calculateINSS(monthlyGrossSalary));
+    const irrf = round(calculateIRRF(monthlyGrossSalary, input.dependents));
+    const totalDeductions = round(inss + irrf);
+    const netSalary = round(monthlyGrossSalary - totalDeductions);
+    const effectiveTaxRate = round((totalDeductions / monthlyGrossSalary) * 100);
 
     return {
-      basicSalary,
-      performanceBonus,
-      postGraduationBonus,
-      triennialBonus,
-      insalubrity,
-      nighttimeAdditional,
-      plantaoTotal,
-      sobreavisoTotal,
-      functionGratification,
-      foodAllowance,
-      salaryFamily,
-      monthlyGrossSalary,
-      annualGrossSalary,
-      vacationWithThirds,
+      basicSalary: round(basicSalary),
+      performanceBonus: round(performanceBonus),
+      postGraduationBonus: round(postGraduationBonus),
+      triennialBonus: round(triennialBonus),
+      insalubrity: round(insalubrity),
+      nighttimeAdditional: round(nighttimeAdditional),
+      plantaoTotal: round(plantaoTotal),
+      sobreavisoTotal: round(sobreavisoTotal),
+      functionGratification: round(functionGratification),
+      foodAllowance: round(foodAllowance),
+      salaryFamily: round(salaryFamily),
+      monthlyGrossSalary: round(monthlyGrossSalary),
+      annualGrossSalary: round(annualGrossSalary),
+      vacationWithThirds: round(vacationWithThirds),
       inss,
       irrf,
       totalDeductions,
