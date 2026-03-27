@@ -540,10 +540,49 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 7: Auxílios */}
+          {/* Seção 7: Gratificação de Função */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">7. Auxílios</CardTitle>
+              <CardTitle className="text-lg">7. Gratificação de Função</CardTitle>
+              <CardDescription>ANEXO IV - Lei Complementar 323/2006</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="functionGratification">Selecione a Gratificação (se houver)</Label>
+                <Select value={input.functionGratification} onValueChange={(value) => setInput({ ...input, functionGratification: value })}>
+                  <SelectTrigger id="functionGratification">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Nenhuma</SelectItem>
+                    <SelectItem value="GF-1">GF-1 - Gestor I (R$ 2.332,80)</SelectItem>
+                    <SelectItem value="GF-2">GF-2 - Gestor II (R$ 1.814,40)</SelectItem>
+                    <SelectItem value="GF-3">GF-3 - Gestor III (R$ 1.555,20)</SelectItem>
+                    <SelectItem value="GF-4">GF-4 - Apoio Gerencial I (R$ 1.244,10)</SelectItem>
+                    <SelectItem value="GF-5">GF-5 - Apoio Gerencial II (R$ 995,30)</SelectItem>
+                    <SelectItem value="GF-6">GF-6 - Apoio Gerencial III (R$ 796,20)</SelectItem>
+                    <SelectItem value="GF-7">GF-7 - Apoio Gerencial IV (R$ 347,40)</SelectItem>
+                    <SelectItem value="GF-8">GF-8 - Chefe de Setor (R$ 260,60)</SelectItem>
+                    <SelectItem value="GF-9">GF-9 - Chefe de Seção (R$ 217,10)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {salary.functionGratification > 0 && (
+                <div className="bg-purple-50 dark:bg-purple-950 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Gratificação de Função</p>
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    R$ {salary.functionGratification.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Seção 8: Auxílios */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">8. Auxílios</CardTitle>
               <CardDescription>Lei Complementar 323/2006, Art. 18 e 19</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -943,22 +982,51 @@ export function SalarySimulator() {
                 </div>
               </div>
 
-              {/* Seção 10: Auxílios */}
+              {/* Seção 10: Gratificação de Função */}
               <div className="space-y-3">
-                <h4 className="font-semibold text-purple-600 dark:text-purple-400">10. Auxílios</h4>
+                <h4 className="font-semibold text-purple-600 dark:text-purple-400">10. Gratificação de Função</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>ANEXO IV - Lei Complementar 323/2006:</strong> Valores fixos mensais conforme cargo de gestão ou apoio gerencial</p>
+                  <p><strong>GF-1 a GF-9:</strong> Gestor I (R$ 2.332,80) até Chefe de Seção (R$ 217,10)</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Acumulativa com outros adicionais</p>
+                </div>
+              </div>
+
+              {/* Seção 11: Auxílios */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-purple-600 dark:text-purple-400">11. Auxílios</h4>
                 <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
                   <p><strong>Auxílio Alimentação (Art. 18):</strong> Valor fixo mensal (indenizatório)</p>
                   <p><strong>Salário-Família (Art. 19):</strong> 5% do salário mínimo por dependente</p>
                 </div>
               </div>
 
-              {/* Seção 11: Férias e Licença */}
+              {/* Seção 12: Férias e Licença */}
               <div className="space-y-3">
-                <h4 className="font-semibold text-purple-600 dark:text-purple-400">11. Férias e Licença-Prêmio</h4>
+                <h4 className="font-semibold text-purple-600 dark:text-purple-400">12. Férias e Licença-Prêmio</h4>
                 <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
                   <p><strong>Férias (Art. 21):</strong> 30 dias + 1/3 do salário</p>
                   <p><strong>Licença-Prêmio (Art. 20):</strong> A cada 5 anos = 3 meses remunerados</p>
                   <p className="text-xs text-gray-600 dark:text-gray-400">Licença-Prêmio NÃO conta para progressão</p>
+
+              {/* Seção 13: Descontos */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-red-600 dark:text-red-400">13. Descontos - INSS e IRRF</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>INSS (11%):</strong> Contribuição Social - 11% do salário bruto (teto: R$ 7.786,02)</p>
+                  <p><strong>IRRF:</strong> Lei nº 15.191/2025 - Alíquotas progressivas a partir de janeiro 2026</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400"><strong>Faixas IRRF (jan 2026):</strong></p>
+                  <ul className="text-xs text-gray-600 dark:text-gray-400 ml-4 space-y-1">
+                    <li>• Até R$ 2.428,80: Isento</li>
+                    <li>• De R$ 2.428,81 a R$ 2.826,65: 7,5%</li>
+                    <li>• De R$ 2.826,66 a R$ 3.751,05: 15%</li>
+                    <li>• De R$ 3.751,06 a R$ 4.664,68: 22,5%</li>
+                    <li>• Acima de R$ 4.664,68: 27,5%</li>
+                  </ul>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-2"><strong>Tabela de Redução (Lei 15.270/2025):</strong> Reduz o IRRF para rendimentos até R$ 7.350,00</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400"><strong>Deduções:</strong> INSS + (Dependentes x R$ 189,59)</p>
+                </div>
+              </div>
                 </div>
               </div>
             </CardContent>
