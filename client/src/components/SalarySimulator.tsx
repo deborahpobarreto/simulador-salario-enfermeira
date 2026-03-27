@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   SALARY_LETTERS,
   SALARY_LEVELS,
+  SALARY_TABLE,
   PERFORMANCE_PERIODS,
   calculateInitialLetter,
   projectCareer,
@@ -595,36 +596,102 @@ export function SalarySimulator() {
             <CardHeader>
               <CardTitle>Projeção de Carreira (10 Anos)</CardTitle>
               <CardDescription>
-                Progressão Horizontal: A cada 2 anos sobe uma letra (Lei Complementar 323/2006, Art. 8º)
+                Progressão Horizontal (Letra): A cada 2 anos | Progressão Vertical (Nível): Com 120h de capacitação
+                <br />
+                <span className="text-xs text-gray-500">Lei Complementar 323/2006, Art. 8º e 9º | Lei 19.313/2025</span>
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              {/* Resumo */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Nível Atual</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{input.level}</p>
+                </div>
+                <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Letra Atual</p>
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">{input.letter}</p>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-950 p-4 rounded-lg">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Tempo Total</p>
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    {yearsOfPreviousService + input.yearsOfService} anos
+                  </p>
+                </div>
+              </div>
+
+              {/* Tabela de Projeção */}
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b-2 border-gray-300 dark:border-gray-700">
+                  <thead className="border-b-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                     <tr>
-                      <th className="text-left py-2 px-3">Ano</th>
-                      <th className="text-left py-2 px-3">Nível</th>
-                      <th className="text-left py-2 px-3">Letra</th>
-                      <th className="text-left py-2 px-3">Total de Serviço</th>
-                      <th className="text-left py-2 px-3">Descrição</th>
+                      <th className="text-left py-3 px-3 font-semibold">Ano</th>
+                      <th className="text-left py-3 px-3 font-semibold">Nível</th>
+                      <th className="text-left py-3 px-3 font-semibold">Letra</th>
+                      <th className="text-left py-3 px-3 font-semibold">Tempo Total</th>
+                      <th className="text-left py-3 px-3 font-semibold">Vencimento Básico</th>
+                      <th className="text-left py-3 px-3 font-semibold">Evento</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {careerProjection.map((proj) => (
-                      <tr
-                        key={proj.year}
-                        className="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900"
-                      >
-                        <td className="py-2 px-3 font-semibold">{proj.year}</td>
-                        <td className="py-2 px-3">{proj.level}</td>
-                        <td className="py-2 px-3 font-bold text-blue-600 dark:text-blue-400">{proj.letter}</td>
-                        <td className="py-2 px-3">{proj.totalYearsOfService} anos</td>
-                        <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{proj.description}</td>
-                      </tr>
-                    ))}
+                    {careerProjection.map((proj, idx) => {
+                      const projSalary = SALARY_TABLE[proj.level.toString()]?.[proj.letter] || 0;
+                      const isProgression = idx > 0 && proj.description.includes("Progressão");
+
+                      return (
+                        <tr
+                          key={proj.year}
+                          className={`border-b border-gray-200 dark:border-gray-800 ${
+                            isProgression
+                              ? "bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900"
+                              : "hover:bg-gray-50 dark:hover:bg-gray-900"
+                          }`}
+                        >
+                          <td className="py-3 px-3 font-semibold text-center">{proj.year}</td>
+                          <td className="py-3 px-3 text-center font-bold text-blue-600 dark:text-blue-400">
+                            {proj.level}
+                          </td>
+                          <td className="py-3 px-3 text-center font-bold text-lg text-green-600 dark:text-green-400">
+                            {proj.letter}
+                          </td>
+                          <td className="py-3 px-3 text-center">{proj.totalYearsOfService} anos</td>
+                          <td className="py-3 px-3 font-semibold text-right">
+                            R$ {projSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                          </td>
+                          <td className="py-3 px-3">
+                            {isProgression ? (
+                              <span className="inline-block bg-green-200 dark:bg-green-800 text-green-900 dark:text-green-100 px-2 py-1 rounded text-xs font-semibold">
+                                ↑ {proj.description}
+                              </span>
+                            ) : proj.year === 0 ? (
+                              <span className="inline-block bg-blue-200 dark:bg-blue-800 text-blue-900 dark:text-blue-100 px-2 py-1 rounded text-xs font-semibold">
+                                Início
+                              </span>
+                            ) : (
+                              <span className="text-gray-500 text-xs">-</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Legenda */}
+              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-2 text-sm">
+                <h4 className="font-semibold">Legenda:</h4>
+                <ul className="space-y-1 text-gray-700 dark:text-gray-300">
+                  <li>
+                    <strong>Progressão Horizontal (Letra):</strong> A cada 2 anos de serviço (Art. 8º)
+                  </li>
+                  <li>
+                    <strong>Progressão Vertical (Nível):</strong> Requer 120 horas de capacitação (Art. 9º)
+                  </li>
+                  <li>
+                    <strong>Vencimento Básico:</strong> Conforme Lei 19.313/2025
+                  </li>
+                </ul>
               </div>
             </CardContent>
           </Card>
