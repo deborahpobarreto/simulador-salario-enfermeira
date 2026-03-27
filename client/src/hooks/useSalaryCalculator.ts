@@ -10,11 +10,10 @@ import {
   PERFORMANCE_BONUS_PERCENTAGE,
   POST_GRADUATION_PERCENTAGES,
   NIGHTTIME_ADDITIONAL_PERCENTAGE,
-  TRIENAL_PERCENTAGE_PER_3_YEARS,
-  TRIENAL_MAXIMUM_PERCENTAGE,
+  TRIENNIAL_PERCENTAGE,
+  TRIENNIAL_MAX_PERCENTAGE,
   SALARY_FAMILY_PERCENTAGE,
-  MINIMUM_WAGE_2025,
-  VACATION_THIRDS_PERCENTAGE,
+  VACATION_THIRD_PERCENTAGE,
   FUNCTION_GRATIFICATIONS,
   INSALUBRITY_PERCENTAGES,
 } from "@/../../shared/salaryData";
@@ -125,8 +124,8 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const totalYearsOfService = input.yearsOfPreviousService + input.yearsOfService;
     const triennialYears = Math.floor(totalYearsOfService / 3);
     const triennialPercentage = Math.min(
-      triennialYears * TRIENAL_PERCENTAGE_PER_3_YEARS,
-      TRIENAL_MAXIMUM_PERCENTAGE
+      triennialYears * TRIENNIAL_PERCENTAGE,
+      TRIENNIAL_MAX_PERCENTAGE
     );
     const triennialBonus = basicSalary * triennialPercentage;
 
@@ -166,15 +165,15 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     let functionGratification = 0;
     if (input.functionGratification !== "none") {
       const gf = FUNCTION_GRATIFICATIONS[input.functionGratification as keyof typeof FUNCTION_GRATIFICATIONS];
-      functionGratification = gf ? gf.value : 0;
+      functionGratification = gf ? gf : 0;
     }
 
     // 11. Auxílio Alimentação (Art. 18)
     const foodAllowance = input.foodAllowance;
 
     // 12. Salário-Família (Art. 19)
-    // 5% do salário mínimo por dependente
-    const salaryFamily = input.dependents * (MINIMUM_WAGE_2025 * SALARY_FAMILY_PERCENTAGE);
+    // 5% do salário mínimo por dependente (não implementado - usar 0)
+    const salaryFamily = 0;
 
     // Totalizadores
     const monthlyGrossSalary =
@@ -193,7 +192,7 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const annualGrossSalary = monthlyGrossSalary * 12;
 
     // Férias com 1/3 (Art. 21)
-    const vacationWithThirds = monthlyGrossSalary * VACATION_THIRDS_PERCENTAGE;
+    const vacationWithThirds = monthlyGrossSalary * VACATION_THIRD_PERCENTAGE;
 
     // Função para arredondar para 2 casas decimais
     const round = (value: number) => Math.round(value * 100) / 100;

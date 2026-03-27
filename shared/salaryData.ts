@@ -3,7 +3,7 @@
  * Estrutura de Carreira de Enfermagem do Estado de Santa Catarina
  * 
  * ATENÇÃO: Todos os dados baseados EXCLUSIVAMENTE na legislação.
- * Ignorar interpretações anteriores - usar apenas fontes legais.
+ * Tabela de Vencimentos - ANEXO III - Lei Complementar 323/2006
  */
 
 /**
@@ -50,218 +50,213 @@ export const SALARY_LETTERS: Record<string, string> = {
 };
 
 /**
- * Lei 19.313/2025 - Tabela de Vencimentos Básicos (ANEXO III)
- * Valores em R$ (conforme Lei 19.313/2025)
+ * Lei Complementar 323/2006 - ANEXO III - Tabela de Vencimentos Básicos
+ * Valores em R$ (conforme Lei Complementar 323/2006)
  * Estrutura: [Nível][Letra] = Vencimento Básico
  */
 export const SALARY_TABLE: Record<string, Record<string, number>> = {
   "1": {
-    "A": 1495.07,
-    "B": 1514.50,
-    "C": 1534.17,
-    "D": 1554.13,
-    "E": 1574.34,
-    "F": 1594.78,
-    "G": 1615.54,
-    "H": 1636.52,
-    "I": 1657.80,
-    "J": 1679.36,
+    "A": 1629.63,
+    "B": 1650.81,
+    "C": 1672.25,
+    "D": 1694.00,
+    "E": 1716.03,
+    "F": 1738.31,
+    "G": 1760.94,
+    "H": 1783.81,
+    "I": 1807.00,
+    "J": 1830.50,
   },
   "2": {
-    "A": 1701.18,
-    "B": 1723.29,
-    "C": 1745.72,
-    "D": 1768.37,
-    "E": 1791.38,
-    "F": 1814.68,
-    "G": 1838.26,
-    "H": 1862.16,
-    "I": 1886.37,
-    "J": 1910.90,
+    "A": 1854.29,
+    "B": 1878.39,
+    "C": 1902.83,
+    "D": 1927.52,
+    "E": 1952.60,
+    "F": 1978.00,
+    "G": 2003.70,
+    "H": 2029.75,
+    "I": 2056.14,
+    "J": 2082.88,
   },
   "3": {
-    "A": 1935.74,
-    "B": 1960.89,
-    "C": 1986.38,
-    "D": 2012.20,
-    "E": 2038.36,
-    "F": 2064.87,
-    "G": 2091.71,
-    "H": 2118.92,
-    "I": 2146.46,
-    "J": 2174.35,
+    "A": 2109.96,
+    "B": 2137.37,
+    "C": 2165.15,
+    "D": 2193.30,
+    "E": 2221.81,
+    "F": 2250.71,
+    "G": 2279.96,
+    "H": 2309.62,
+    "I": 2339.64,
+    "J": 2370.04,
   },
   "4": {
-    "A": 2202.62,
-    "B": 2231.24,
-    "C": 2260.25,
-    "D": 2289.64,
-    "E": 2319.43,
-    "F": 2349.55,
-    "G": 2380.11,
-    "H": 2411.04,
-    "I": 2442.40,
-    "J": 2474.15,
+    "A": 2400.86,
+    "B": 2432.05,
+    "C": 2463.67,
+    "D": 2495.71,
+    "E": 2528.18,
+    "F": 2561.01,
+    "G": 2594.32,
+    "H": 2628.03,
+    "I": 2662.22,
+    "J": 2696.82,
   },
   "5": {
-    "A": 1613.09,
-    "B": 1634.07,
-    "C": 1655.31,
-    "D": 1676.81,
-    "E": 1698.62,
-    "F": 1720.68,
-    "G": 1743.07,
-    "H": 1765.72,
-    "I": 1788.69,
-    "J": 1811.93,
+    "A": 1758.27,
+    "B": 1781.14,
+    "C": 1804.29,
+    "D": 1827.72,
+    "E": 1851.50,
+    "F": 1875.54,
+    "G": 1899.95,
+    "H": 1924.63,
+    "I": 1949.67,
+    "J": 1975.00,
   },
   "6": {
-    "A": 1835.50,
-    "B": 1859.33,
-    "C": 1883.51,
-    "D": 1908.00,
-    "E": 1932.81,
-    "F": 1957.95,
-    "G": 1983.38,
-    "H": 2009.18,
-    "I": 2035.29,
-    "J": 2061.76,
+    "A": 2000.70,
+    "B": 2026.67,
+    "C": 2053.03,
+    "D": 2079.72,
+    "E": 2106.76,
+    "F": 2134.17,
+    "G": 2161.88,
+    "H": 2190.01,
+    "I": 2218.47,
+    "J": 2247.32,
   },
   "7": {
-    "A": 2088.56,
-    "B": 2115.70,
-    "C": 2143.19,
-    "D": 2171.07,
-    "E": 2199.29,
-    "F": 2227.87,
-    "G": 2256.84,
-    "H": 2286.20,
-    "I": 2315.90,
-    "J": 2346.02,
+    "A": 2276.53,
+    "B": 2306.11,
+    "C": 2336.08,
+    "D": 2366.48,
+    "E": 2397.23,
+    "F": 2428.38,
+    "G": 2459.96,
+    "H": 2491.96,
+    "I": 2524.33,
+    "J": 2557.16,
   },
   "8": {
-    "A": 2376.50,
-    "B": 2407.42,
-    "C": 2438.71,
-    "D": 2470.41,
-    "E": 2502.51,
-    "F": 2535.06,
-    "G": 2568.01,
-    "H": 2601.39,
-    "I": 2635.20,
-    "J": 2669.47,
+    "A": 2590.39,
+    "B": 2624.09,
+    "C": 2658.19,
+    "D": 2692.75,
+    "E": 2727.74,
+    "F": 2763.22,
+    "G": 2799.13,
+    "H": 2835.52,
+    "I": 2872.37,
+    "J": 2909.72,
   },
   "9": {
-    "A": 1770.44,
-    "B": 1797.00,
-    "C": 1823.95,
-    "D": 1851.31,
-    "E": 1879.10,
-    "F": 1907.29,
-    "G": 1935.90,
-    "H": 1964.93,
-    "I": 1994.40,
-    "J": 2024.32,
+    "A": 1929.78,
+    "B": 1958.73,
+    "C": 1988.11,
+    "D": 2017.93,
+    "E": 2048.22,
+    "F": 2078.95,
+    "G": 2110.13,
+    "H": 2141.77,
+    "I": 2173.90,
+    "J": 2206.51,
   },
   "10": {
-    "A": 2054.70,
-    "B": 2085.49,
-    "C": 2116.82,
-    "D": 2148.55,
-    "E": 2180.79,
-    "F": 2213.48,
-    "G": 2246.68,
-    "H": 2280.40,
-    "I": 2314.59,
-    "J": 2349.33,
+    "A": 2239.62,
+    "B": 2273.18,
+    "C": 2307.33,
+    "D": 2341.92,
+    "E": 2377.06,
+    "F": 2412.69,
+    "G": 2448.88,
+    "H": 2485.64,
+    "I": 2522.90,
+    "J": 2560.77,
   },
   "11": {
-    "A": 2384.54,
-    "B": 2420.31,
-    "C": 2456.62,
-    "D": 2493.47,
-    "E": 2530.88,
-    "F": 2568.84,
-    "G": 2607.35,
-    "H": 2646.48,
-    "I": 2686.16,
-    "J": 2726.46,
+    "A": 2599.15,
+    "B": 2638.14,
+    "C": 2677.72,
+    "D": 2717.88,
+    "E": 2758.66,
+    "F": 2800.04,
+    "G": 2842.01,
+    "H": 2884.66,
+    "I": 2927.91,
+    "J": 2971.84,
   },
   "12": {
-    "A": 2767.35,
-    "B": 2808.87,
-    "C": 2851.01,
-    "D": 2893.76,
-    "E": 2937.17,
-    "F": 2981.24,
-    "G": 3025.96,
-    "H": 3071.35,
-    "I": 3117.41,
-    "J": 3164.17,
+    "A": 3016.41,
+    "B": 3061.67,
+    "C": 3107.60,
+    "D": 3154.20,
+    "E": 3201.52,
+    "F": 3249.55,
+    "G": 3298.30,
+    "H": 3347.77,
+    "I": 3397.98,
+    "J": 3448.95,
   },
   "13": {
-    "A": 2360.61,
-    "B": 2407.83,
-    "C": 2455.99,
-    "D": 2505.11,
-    "E": 2555.21,
-    "F": 2606.31,
-    "G": 2658.43,
-    "H": 2711.59,
-    "I": 2765.84,
-    "J": 2821.16,
+    "A": 2573.06,
+    "B": 2624.53,
+    "C": 2677.03,
+    "D": 2730.57,
+    "E": 2785.18,
+    "F": 2840.88,
+    "G": 2897.69,
+    "H": 2955.63,
+    "I": 3014.77,
+    "J": 3075.06,
   },
   "14": {
-    "A": 2877.57,
-    "B": 2935.13,
-    "C": 2993.83,
-    "D": 3053.70,
-    "E": 3114.76,
-    "F": 3177.06,
-    "G": 3240.61,
-    "H": 3305.44,
-    "I": 3371.56,
-    "J": 3438.96,
+    "A": 3136.55,
+    "B": 3199.29,
+    "C": 3263.27,
+    "D": 3328.53,
+    "E": 3395.09,
+    "F": 3463.00,
+    "G": 3532.26,
+    "H": 3602.93,
+    "I": 3675.00,
+    "J": 3748.47,
   },
   "15": {
-    "A": 3507.74,
-    "B": 3577.91,
-    "C": 3649.46,
-    "D": 3722.46,
-    "E": 3796.88,
-    "F": 3872.85,
-    "G": 3950.29,
-    "H": 4029.28,
-    "I": 4109.88,
-    "J": 4192.08,
+    "A": 3823.44,
+    "B": 3899.92,
+    "C": 3977.91,
+    "D": 4057.48,
+    "E": 4138.60,
+    "F": 4221.41,
+    "G": 4305.82,
+    "H": 4391.92,
+    "I": 4479.77,
+    "J": 4569.37,
   },
   "16": {
-    "A": 4275.92,
-    "B": 4361.45,
-    "C": 4448.67,
-    "D": 4537.63,
-    "E": 4628.40,
-    "F": 4720.96,
-    "G": 4815.37,
-    "H": 4911.68,
-    "I": 5009.93,
-    "J": 5110.09,
+    "A": 4660.75,
+    "B": 4753.98,
+    "C": 4849.05,
+    "D": 4946.02,
+    "E": 5044.96,
+    "F": 5145.85,
+    "G": 5248.75,
+    "H": 5353.73,
+    "I": 5460.82,
+    "J": 5570.00,
   },
 };
 
 /**
- * Lei 15.984/2013, alterada por Lei 18.371/2022 e Lei 19.313/2025
- * Gratificação de Desempenho em Saúde
- * 
- * Percentuais conforme período:
- * - Até 30 abr 2025: 70%
- * - 1º mai 2025 a 30 nov 2025: 80% (50% em mai, 50% em jun)
- * - A partir 1º dez 2025: 90% (50% em dez, 50% em jan/2026)
+ * Lei 19.313/2025 - Gratificação de Desempenho em Saúde
+ * Percentuais sobre Vencimento Básico
  */
 export const PERFORMANCE_PERIODS: Record<string, string> = {
-  "before_may_2025": "Até 30 de abril de 2025 (70%)",
-  "may_to_december_2025": "1º de maio a 30 de novembro de 2025 (80%)",
-  "after_december_2025": "A partir de 1º de dezembro de 2025 (90%)",
+  "before_may_2025": "Antes de maio/2025 (70%)",
+  "may_to_december_2025": "Maio a dezembro/2025 (80%)",
+  "after_december_2025": "A partir de dezembro/2025 (90%)",
 };
 
 export const PERFORMANCE_BONUS_PERCENTAGE: Record<string, number> = {
@@ -271,154 +266,114 @@ export const PERFORMANCE_BONUS_PERCENTAGE: Record<string, number> = {
 };
 
 /**
- * Lei Complementar 323/2006 - Art. 14º
+ * Lei Complementar 323/2006 - Art. 14
  * Adicional de Pós-Graduação (não cumulativo)
- * 
- * Percentuais sobre o vencimento básico:
- * - Especialização: 13%
- * - Mestrado: 16%
- * - Doutorado: 19%
- * 
- * NÃO CUMULATIVO: Só um tipo de pós-graduação por vez
  */
 export const POST_GRADUATION_PERCENTAGES: Record<string, number> = {
-  "none": 0.00,
-  "specialization": 0.13,
-  "masters": 0.16,
-  "doctorate": 0.19,
+  "none": 0,
+  "specialization": 0.13, // 13%
+  "masters": 0.16, // 16%
+  "doctorate": 0.19, // 19%
 };
 
 /**
  * Lei Complementar 323/2006 - Art. 12
- * Adicional de Insalubridade
- * Valor fixo calculado sobre Nivel 9, Referencia A
- * 
- * Setores Gerais:
- * - Minimo: 13% (conforme edital)
- * - Medio: 17%
- * - Maximo: 23%
- * 
- * Setores Especificos (Psiquiatria, Infectologia):
- * - Minimo: 17%
- * - Medio: 26%
- * - Maximo: 34%
+ * Adicional de Insalubridade (calculado sobre Nível 9, Letra A)
  */
-export const INSALUBRITY_PERCENTAGES = {
-  general: {
-    minimum: 0.13,
-    medium: 0.17,
-    maximum: 0.23,
+export const INSALUBRITY_PERCENTAGES: Record<string, Record<string, number>> = {
+  "general": {
+    "minimum": 0.13, // 13% - conforme edital
+    "medium": 0.17, // 17%
+    "maximum": 0.23, // 23%
   },
-  specific: {
-    minimum: 0.17,
-    medium: 0.26,
-    maximum: 0.34,
+  "specific": {
+    "minimum": 0.17, // 17% - Psiquiatria, Infectologia
+    "medium": 0.26, // 26%
+    "maximum": 0.34, // 34%
   },
 };
 
 export const INSALUBRITY_TYPES: Record<string, string> = {
-  "none": "Sem Insalubridade",
-  "general_minimum": "Geral - Minimo (13%)",
-  "general_medium": "Geral - Medio (17%)",
-  "general_maximum": "Geral - Maximo (23%)",
-  "specific_minimum": "Especificos - Minimo (17%)",
-  "specific_medium": "Especificos - Medio (26%)",
-  "specific_maximum": "Especificos - Maximo (34%)",
+  "none": "Nenhuma",
+  "general_minimum": "Geral - Mínimo (13%)",
+  "general_medium": "Geral - Médio (17%)",
+  "general_maximum": "Geral - Máximo (23%)",
+  "specific_minimum": "Específico - Mínimo (17%)",
+  "specific_medium": "Específico - Médio (26%)",
+  "specific_maximum": "Específico - Máximo (34%)",
 };
-
-/**
- * Lei Complementar 323/2006 - Art. 11º
- * Adicional Noturno
- * 25% sobre o valor da hora trabalhada entre 22h e 06h
- */
-export const NIGHTTIME_ADDITIONAL_PERCENTAGE = 0.25;
-
-/**
- * Lei Complementar 323/2006 - Art. 15º
- * Adicional Trienal
- * 3% a cada 3 anos de serviço, máximo 36% (12 triênios)
- * Contagem inclui tempo anterior (Art. 33)
- */
-export const TRIENAL_PERCENTAGE_PER_3_YEARS = 0.03;
-export const TRIENAL_MAXIMUM_PERCENTAGE = 0.36;
-
-/**
- * Lei Complementar 323/2006 - Art. 18º
- * Auxílio Alimentação (valor padrão, customizável)
- */
-export const DEFAULT_FOOD_ALLOWANCE = 550.00;
-
-/**
- * Lei Complementar 323/2006 - Art. 19º
- * Salário-Família
- * 5% do salário mínimo por dependente
- * 
- * Salário mínimo 2025: R$ 1.412,00
- */
-export const SALARY_FAMILY_PERCENTAGE = 0.05;
-export const MINIMUM_WAGE_2025 = 1412.00;
-
-/**
- * Lei Complementar 323/2006 - Art. 21º
- * Férias: 30 dias + 1/3 do salário
- */
-export const VACATION_DAYS = 30;
-export const VACATION_THIRDS_PERCENTAGE = 1 / 3;
-
-/**
- * Lei Complementar 323/2006 - Art. 20º
- * Licença-Prêmio
- * A cada 5 anos: 3 meses remunerados
- * 
- * IMPORTANTE: Tempo gozado em Licença-Prêmio NÃO conta para progressão
- * Licença-Prêmio NÃO pode ser convertida em dinheiro
- */
-export const LEAVE_REWARD_FREQUENCY_YEARS = 5;
-export const LEAVE_REWARD_DURATION_MONTHS = 3;
-
-/**
- * Lei Complementar 323/2006 - Art. 8º
- * Progressão Horizontal
- * A cada 2 anos de serviço, sobe uma letra
- */
-export const HORIZONTAL_PROGRESSION_YEARS = 2;
-
-/**
- * Lei Complementar 323/2006 - Art. 9º
- * Progressão Vertical
- * Requisito: 120 horas de capacitação profissional
- */
-export const VERTICAL_PROGRESSION_HOURS = 120;
-
-/**
- * Lei Complementar 323/2006 - Art. 33º
- * Aproveitamento de Tempo Anterior
- * Tempo em outro órgão público conta para progressão
- */
-export const PREVIOUS_SERVICE_COUNTS_FOR_PROGRESSION = true;
 
 /**
  * Lei Complementar 323/2006 - ANEXO IV
- * Gratificação de Função (GF)
+ * Gratificação de Função (valores fixos mensais)
  */
-export const FUNCTION_GRATIFICATIONS: Record<string, { name: string; value: number }> = {
-  "GF-1": { name: "Gestor I", value: 2332.80 },
-  "GF-2": { name: "Gestor II", value: 1814.40 },
-  "GF-3": { name: "Gestor III", value: 1555.20 },
-  "GF-4": { name: "Apoio Gerencial I", value: 1244.10 },
-  "GF-5": { name: "Apoio Gerencial II", value: 995.30 },
-  "GF-6": { name: "Apoio Gerencial III", value: 796.20 },
-  "GF-7": { name: "Apoio Gerencial IV", value: 347.40 },
-  "GF-8": { name: "Chefe de Setor", value: 260.60 },
-  "GF-9": { name: "Chefe de Seção", value: 217.10 },
+export const FUNCTION_GRATIFICATIONS: Record<string, number> = {
+  "none": 0,
+  "GF-1": 2332.80, // Gestor I
+  "GF-2": 1814.40, // Gestor II
+  "GF-3": 1555.20, // Gestor III
+  "GF-4": 1244.10, // Apoio Gerencial I
+  "GF-5": 995.30,  // Apoio Gerencial II
+  "GF-6": 796.20,  // Apoio Gerencial III
+  "GF-7": 347.40,  // Apoio Gerencial IV
+  "GF-8": 260.60,  // Chefe de Setor
+  "GF-9": 217.10,  // Chefe de Seção
 };
 
 /**
- * Função auxiliar para calcular letra inicial baseada em tempo anterior
+ * Lei Complementar 323/2006 - Art. 10
+ * Adicional Trienal: 3% a cada 3 anos (máximo 36%)
+ */
+export const TRIENNIAL_PERCENTAGE = 0.03; // 3% por triênio
+export const TRIENNIAL_MAX_PERCENTAGE = 0.36; // 36% máximo
+
+/**
+ * Lei Complementar 323/2006 - Art. 11
+ * Adicional Noturno: 25% sobre horas trabalhadas entre 22h-06h
+ */
+export const NIGHTTIME_ADDITIONAL_PERCENTAGE = 0.25; // 25%
+
+/**
+ * Lei Complementar 323/2006 - Art. 18
+ * Auxílio Alimentação (valor fixo, indenizatório)
+ */
+export const FOOD_ALLOWANCE_DEFAULT = 550.00;
+
+/**
+ * Lei Complementar 323/2006 - Art. 19
+ * Salário-Família: 5% do salário mínimo por dependente
+ */
+export const SALARY_FAMILY_PERCENTAGE = 0.05;
+
+/**
+ * Lei Complementar 323/2006 - Art. 21
+ * Férias: 30 dias + 1/3 do salário
+ */
+export const VACATION_DAYS = 30;
+export const VACATION_THIRD_PERCENTAGE = 1/3;
+
+/**
+ * Lei Complementar 323/2006 - Art. 20
+ * Licença-Prêmio: A cada 5 anos = 3 meses remunerados
+ * NÃO conta para progressão
+ */
+export const PRIZE_LEAVE_YEARS = 5;
+export const PRIZE_LEAVE_MONTHS = 3;
+
+/**
+ * Lei Complementar 323/2006 - Art. 8º e 9º
+ * Progressão Horizontal: A cada 2 anos sobe uma letra
+ * Progressão Vertical: Com 120h de capacitação, sobe um nível
+ */
+export const HORIZONTAL_PROGRESSION_YEARS = 2;
+export const VERTICAL_PROGRESSION_HOURS = 120;
+
+/**
  * Lei Complementar 323/2006 - Art. 33
+ * Tempo de Serviço Anterior: Conta para progressão (2 anos = 1 letra)
  */
 export function calculateInitialLetter(yearsOfPreviousService: number): string {
   const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-  const letterIndex = Math.floor(yearsOfPreviousService / 2);
-  return letters[Math.min(letterIndex, 9)];
+  const letterIndex = Math.floor(yearsOfPreviousService / HORIZONTAL_PROGRESSION_YEARS);
+  return letters[Math.min(letterIndex, letters.length - 1)];
 }
