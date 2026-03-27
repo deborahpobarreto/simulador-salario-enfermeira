@@ -1,63 +1,67 @@
 import { useMemo } from "react";
 import {
   BASIC_SALARY,
-  INSALUBRITY_BONUS,
-  POSTGRAD_BONUS,
+  NIGHTTIME_ADDITIONAL_PERCENTAGE,
   TRIENNIAL_BONUS,
   PERFORMANCE_BONUS_PERCENTAGE,
   DEFAULT_FOOD_ALLOWANCE,
-  DEFAULT_INSALUBRITY_SES,
 } from "@/../../shared/salaryData";
 
 export interface SalaryCalculatorInput {
-  level: number;
-  letter: string;
-  postgrad: string;
-  insalubrity: string;
-  sector: "general" | "specific";
+  // Identificação do cargo
+  level: number; // 1-16
+  letter: string; // A-J
+  
+  // Tempo de serviço
   yearsOfService: number;
-  // Variáveis extras
-  plantaoHours: number;
+  
+  // Período para cálculo de gratificação
+  performancePeriod: "before_may_2025" | "may_to_december_2025" | "after_december_2025";
+  
+  // Variáveis conforme Lei 323/2006
+  nighttimeHours: number; // Horas 22h-06h
+  plantaoHours: number; // Hora-plantão
   plantaoHourlyRate: number;
   sobreaviso: {
     hours: number;
     hourlyRate: number;
-    convoked: boolean;
+    convoked: boolean; // true = 100%, false = 50%
   };
-  nighttimeHours: number; // Horas noturnas (22h-06h)
-  nighttimeExtraHours: number; // Horas extras noturnas
+  
+  // Auxílios
   foodAllowance: number;
-  dependents: number; // Para salário-família
+  dependents: number;
 }
 
 export interface SalaryBreakdown {
-  // Componentes fixos
+  // Componentes fixos (Lei 323/2006)
   basicSalary: number;
-  postgradBonus: number;
-  insalubrity: number;
-  triennialBonus: number;
-  performanceBonus: number;
-  // Variáveis
-  plantaoTotal: number;
-  sobreavisoTotal: number;
-  nighttimeAdditional: number;
-  nighttimeExtraTotal: number;
-  foodAllowance: number;
-  salaryFamily: number;
+  performanceBonus: number; // Gratificação de Desempenho (Lei 15.984/2013, alterada por Lei 19.313/2025)
+  triennialBonus: number; // Adicional Trienal (Art. 15)
+  nighttimeAdditional: number; // Adicional Noturno (Art. 16) - 25%
+  
+  // Variáveis (Lei 323/2006)
+  plantaoTotal: number; // Hora-plantão
+  sobreavisoTotal: number; // Sobreaviso
+  
+  // Auxílios (Lei 323/2006)
+  foodAllowance: number; // Auxílio Alimentação
+  salaryFamily: number; // Salário-Família
+  
   // Totais
   monthlyGrossSalary: number;
   annualGrossSalary: number;
-  thirdsOfVacation: number;
-  vacationWithThirds: number;
+  vacationWithThirds: number; // Férias + 1/3
+  
   details: {
     basicSalaryValue: number;
-    postgradPercentage: number;
-    postgradValue: number;
-    insalubrity: number;
-    triennialPercentage: number;
-    triennialValue: number;
     performanceBonusPercentage: number;
     performanceBonusValue: number;
+    triennialPercentage: number;
+    triennialValue: number;
+    nighttimeHours: number;
+    nighttimePercentage: number;
+    nighttimeAdditionalValue: number;
     plantaoHours: number;
     plantaoHourlyRate: number;
     plantaoTotal: number;
@@ -65,11 +69,6 @@ export interface SalaryBreakdown {
     sobreavisoHourlyRate: number;
     sobreavisoPercentage: number;
     sobreavisoTotal: number;
-    nighttimeHours: number;
-    nighttimePercentage: number;
-    nighttimeAdditionalValue: number;
-    nighttimeExtraHours: number;
-    nighttimeExtraTotal: number;
     foodAllowance: number;
     dependents: number;
     salaryFamilyPercentage: number;
@@ -77,104 +76,87 @@ export interface SalaryBreakdown {
   };
 }
 
-// Salário mínimo estadual de referência (para cálculo de salário-família)
-const STATE_MINIMUM_SALARY = 1412.0; // Aproximado para 2025
+// Salário mínimo estadual de referência para Salário-Família
+const STATE_MINIMUM_SALARY = 1412.0;
 
 export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryBreakdown {
   return useMemo(() => {
-    // 1. Vencimento Básico (Tabela 1)
+    // 1. Vencimento Básico (Lei 19.313/2025 - Anexo III)
     const basicSalaryValue =
       BASIC_SALARY[input.level as keyof typeof BASIC_SALARY]?.[
-        input.letter as keyof (typeof BASIC_SALARY)[13]
+        input.letter as keyof (typeof BASIC_SALARY)[1]
       ] || 0;
 
-    // 2. Adicional de Pós-Graduação (Tabela 2)
-    const postgradData =
-      POSTGRAD_BONUS[input.postgrad as keyof typeof POSTGRAD_BONUS] || {
-        percentage: 0,
-        value: 0,
-      };
-    const postgradValue = postgradData.value;
+    // 2. Gratificação de Desempenho em Saúde (Lei 15.984/2013, alterada por Lei 19.313/2025)
+    // § 4º: 80% (1º maio 2025) e 90% (1º dezembro 2025)
+    const performanceBonusPercentage =
+      PERFORMANCE_BONUS_PERCENTAGE[
+        input.performancePeriod as keyof typeof PERFORMANCE_BONUS_PERCENTAGE
+      ] || 0.70;
+    const performanceBonusValue = basicSalaryValue * performanceBonusPercentage;
 
-    // 3. Adicional de Insalubridade (Tabela 3)
-    const insalubrity =
-      INSALUBRITY_BONUS[input.insalubrity as keyof typeof INSALUBRITY_BONUS]?.[
-        input.sector as "general" | "specific"
-      ] || 0;
-
-    // 4. Adicional Trienal (Tabela 4)
+    // 3. Adicional Trienal (Lei 323/2006, Art. 15)
+    // 3% sobre vencimento básico a cada 3 anos, até 36%
     const triennialPercentage = TRIENNIAL_BONUS(input.yearsOfService);
     const triennialValue = (basicSalaryValue * triennialPercentage) / 100;
 
-    // 5. Gratificação de Desempenho em Saúde (70% do vencimento)
-    const performanceBonusValue = basicSalaryValue * PERFORMANCE_BONUS_PERCENTAGE;
+    // 4. Adicional Noturno (Lei 323/2006, Art. 16)
+    // 25% sobre hora trabalhada entre 22h e 06h
+    const hourlyRate = basicSalaryValue / 160; // 160 horas/mês
+    const nighttimeAdditionalValue =
+      hourlyRate * NIGHTTIME_ADDITIONAL_PERCENTAGE * input.nighttimeHours;
 
-    // 6. Adicional Noturno (25% sobre hora trabalhada 22h-06h)
-    // Considerando 160 horas/mês como base
-    const hourlyRate = basicSalaryValue / 160;
-    const nighttimeAdditionalValue = (hourlyRate * 0.25 * input.nighttimeHours);
-
-    // 7. Horas Extras Noturnas (valor/hora customizável)
-    const nighttimeExtraTotal = input.nighttimeExtraHours * (hourlyRate * 1.5); // 50% extra
-
-    // 8. Plantão
+    // 5. Hora-Plantão (Lei 323/2006)
     const plantaoTotal = input.plantaoHours * input.plantaoHourlyRate;
 
-    // 9. Sobreaviso
+    // 6. Sobreaviso (Lei 323/2006)
+    // 50% se não convocado, 100% se convocado
     const sobreavisoMultiplier = input.sobreaviso.convoked ? 1 : 0.5;
     const sobreavisoTotal =
       input.sobreaviso.hours * input.sobreaviso.hourlyRate * sobreavisoMultiplier;
 
-    // 10. Auxílio Alimentação
+    // 7. Auxílio Alimentação (Lei 323/2006)
     const foodAllowanceValue = input.foodAllowance;
 
-    // 11. Salário-Família (5% do menor salário por dependente)
-    const salaryFamilyValue = (STATE_MINIMUM_SALARY * 0.05 * input.dependents);
+    // 8. Salário-Família (Lei 323/2006)
+    // 5% do salário mínimo por dependente
+    const salaryFamilyValue = STATE_MINIMUM_SALARY * 0.05 * input.dependents;
 
-    // Cálculos de salário mensal
+    // Cálculos de totais
     const monthlyGrossSalary =
       basicSalaryValue +
-      postgradValue +
-      insalubrity +
-      triennialValue +
       performanceBonusValue +
+      triennialValue +
+      nighttimeAdditionalValue +
       plantaoTotal +
       sobreavisoTotal +
-      nighttimeAdditionalValue +
-      nighttimeExtraTotal +
       foodAllowanceValue +
       salaryFamilyValue;
 
-    // Cálculos anuais
     const annualGrossSalary = monthlyGrossSalary * 12;
-    const thirdsOfVacation = monthlyGrossSalary / 3;
-    const vacationWithThirds = monthlyGrossSalary + thirdsOfVacation;
+    const vacationWithThirds = monthlyGrossSalary + monthlyGrossSalary / 3;
 
     return {
       basicSalary: basicSalaryValue,
-      postgradBonus: postgradValue,
-      insalubrity,
-      triennialBonus: triennialValue,
       performanceBonus: performanceBonusValue,
+      triennialBonus: triennialValue,
+      nighttimeAdditional: nighttimeAdditionalValue,
       plantaoTotal,
       sobreavisoTotal,
-      nighttimeAdditional: nighttimeAdditionalValue,
-      nighttimeExtraTotal,
       foodAllowance: foodAllowanceValue,
       salaryFamily: salaryFamilyValue,
       monthlyGrossSalary,
       annualGrossSalary,
-      thirdsOfVacation,
       vacationWithThirds,
       details: {
         basicSalaryValue,
-        postgradPercentage: postgradData.percentage,
-        postgradValue,
-        insalubrity,
+        performanceBonusPercentage: performanceBonusPercentage * 100,
+        performanceBonusValue,
         triennialPercentage,
         triennialValue,
-        performanceBonusPercentage: PERFORMANCE_BONUS_PERCENTAGE * 100,
-        performanceBonusValue,
+        nighttimeHours: input.nighttimeHours,
+        nighttimePercentage: NIGHTTIME_ADDITIONAL_PERCENTAGE * 100,
+        nighttimeAdditionalValue,
         plantaoHours: input.plantaoHours,
         plantaoHourlyRate: input.plantaoHourlyRate,
         plantaoTotal,
@@ -182,109 +164,11 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryBreakdo
         sobreavisoHourlyRate: input.sobreaviso.hourlyRate,
         sobreavisoPercentage: sobreavisoMultiplier * 100,
         sobreavisoTotal,
-        nighttimeHours: input.nighttimeHours,
-        nighttimePercentage: 25,
-        nighttimeAdditionalValue,
-        nighttimeExtraHours: input.nighttimeExtraHours,
-        nighttimeExtraTotal,
         foodAllowance: foodAllowanceValue,
         dependents: input.dependents,
         salaryFamilyPercentage: 5,
         salaryFamilyValue,
       },
     };
-  }, [input]);
-}
-
-// Hook para projeção de carreira
-export interface CareerProjectionInput {
-  startingLevel: number;
-  startingLetter: string;
-  postgrad: string;
-  insalubrity: string;
-  sector: "general" | "specific";
-  yearsToProject: number;
-  plantaoHours: number;
-  plantaoHourlyRate: number;
-  nighttimeHours: number;
-  foodAllowance: number;
-  dependents: number;
-}
-
-export interface CareerYear {
-  year: number;
-  level: number;
-  letter: string;
-  progressionType: "horizontal" | "vertical" | "none";
-  monthlyGrossSalary: number;
-  annualGrossSalary: number;
-  vacationWithThirds: number;
-  yearsOfService: number;
-}
-
-export function useCareerProjection(
-  input: CareerProjectionInput
-): CareerYear[] {
-  return useMemo(() => {
-    const projection: CareerYear[] = [];
-    let currentLevel = input.startingLevel;
-    let currentLetter = input.startingLetter.charCodeAt(0) - "A".charCodeAt(0);
-    const letters = "ABCDEFGHIJ".split("");
-
-    for (let year = 0; year <= input.yearsToProject; year++) {
-      let progressionType: "horizontal" | "vertical" | "none" = "none";
-
-      // Lógica de progressão: alterna entre horizontal (letra) e vertical (nível)
-      if (year > 0 && year % 2 === 0) {
-        // A cada 2 anos
-        if (year % 4 === 0) {
-          // Progressão vertical (nível)
-          if (currentLevel < 16) {
-            currentLevel++;
-            progressionType = "vertical";
-          }
-        } else {
-          // Progressão horizontal (letra)
-          if (currentLetter < 9) {
-            currentLetter++;
-            progressionType = "horizontal";
-          }
-        }
-      }
-
-      const letter = letters[currentLetter];
-
-      // Calcular salário para este ano
-      const salaryInput: SalaryCalculatorInput = {
-        level: currentLevel,
-        letter,
-        postgrad: input.postgrad,
-        insalubrity: input.insalubrity,
-        sector: input.sector,
-        yearsOfService: year,
-        plantaoHours: input.plantaoHours,
-        plantaoHourlyRate: input.plantaoHourlyRate,
-        sobreaviso: { hours: 0, hourlyRate: 0, convoked: false },
-        nighttimeHours: input.nighttimeHours,
-        nighttimeExtraHours: 0,
-        foodAllowance: input.foodAllowance,
-        dependents: input.dependents,
-      };
-
-      const salary = useSalaryCalculator(salaryInput);
-
-      projection.push({
-        year,
-        level: currentLevel,
-        letter,
-        progressionType,
-        monthlyGrossSalary: salary.monthlyGrossSalary,
-        annualGrossSalary: salary.annualGrossSalary,
-        vacationWithThirds: salary.vacationWithThirds,
-        yearsOfService: year,
-      });
-    }
-
-    return projection;
   }, [input]);
 }

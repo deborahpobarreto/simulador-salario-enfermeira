@@ -12,14 +12,12 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  INSALUBRITY_LEVELS,
-  INSALUBRITY_SECTORS,
-  POSTGRAD_TYPES,
   SALARY_LETTERS,
   SALARY_LEVELS,
+  PERFORMANCE_PERIODS,
 } from "@/../../shared/salaryData";
-import { useSalaryCalculator, useCareerProjection, type SalaryCalculatorInput } from "@/hooks/useSalaryCalculator";
-import { Trash2, Plus, TrendingUp } from "lucide-react";
+import { useSalaryCalculator, type SalaryCalculatorInput } from "@/hooks/useSalaryCalculator";
+import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 interface SimulationHistory {
@@ -33,10 +31,9 @@ export function SalarySimulator() {
   const [input, setInput] = useState<SalaryCalculatorInput>({
     level: 13,
     letter: "A",
-    postgrad: "especialization",
-    insalubrity: "medium",
-    sector: "general",
     yearsOfService: 0,
+    performancePeriod: "after_december_2025",
+    nighttimeHours: 0,
     plantaoHours: 0,
     plantaoHourlyRate: 50,
     sobreaviso: {
@@ -44,28 +41,12 @@ export function SalarySimulator() {
       hourlyRate: 50,
       convoked: true,
     },
-    nighttimeHours: 0,
-    nighttimeExtraHours: 0,
     foodAllowance: 550,
     dependents: 0,
   });
 
   const [history, setHistory] = useState<SimulationHistory[]>([]);
   const salary = useSalaryCalculator(input);
-
-  const careerProjection = useCareerProjection({
-    startingLevel: input.level,
-    startingLetter: input.letter,
-    postgrad: input.postgrad,
-    insalubrity: input.insalubrity,
-    sector: input.sector,
-    yearsToProject: 10,
-    plantaoHours: input.plantaoHours,
-    plantaoHourlyRate: input.plantaoHourlyRate,
-    nighttimeHours: input.nighttimeHours,
-    foodAllowance: input.foodAllowance,
-    dependents: input.dependents,
-  });
 
   const handleAddSimulation = () => {
     const newSimulation: SimulationHistory = {
@@ -91,26 +72,22 @@ export function SalarySimulator() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="simulator" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="simulator">Simulador</TabsTrigger>
-          <TabsTrigger value="projection" className="gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Carreira (10 anos)
-          </TabsTrigger>
           <TabsTrigger value="history">Histórico ({history.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="simulator" className="space-y-6">
-          {/* Seção 1: Vencimento Básico */}
+          {/* Seção 1: Identificação do Cargo */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">1. Vencimento Básico</CardTitle>
-              <CardDescription>Escolha seu nível e letra de progressão</CardDescription>
+              <CardTitle className="text-lg">1. Identificação do Cargo</CardTitle>
+              <CardDescription>Conforme Lei Complementar 323/2006 e Lei 19.313/2025</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="level">Nível</Label>
+                  <Label htmlFor="level">Nível (1-16)</Label>
                   <Select
                     value={input.level.toString()}
                     onValueChange={(value) =>
@@ -131,7 +108,7 @@ export function SalarySimulator() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="letter">Letra (Progressão Horizontal)</Label>
+                  <Label htmlFor="letter">Referência (Letra A-J)</Label>
                   <Select value={input.letter} onValueChange={(value) => setInput({ ...input, letter: value })}>
                     <SelectTrigger id="letter">
                       <SelectValue />
@@ -148,7 +125,7 @@ export function SalarySimulator() {
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Vencimento Básico</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Vencimento Básico (Lei 19.313/2025)</p>
                 <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                   R$ {salary.basicSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                 </p>
@@ -160,33 +137,25 @@ export function SalarySimulator() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">2. Gratificação de Desempenho em Saúde</CardTitle>
-              <CardDescription>70% do vencimento básico (Lei 18.371/2022)</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400">70% do Vencimento</p>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  R$ {salary.performanceBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Seção 3: Pós-Graduação */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">3. Adicional de Pós-Graduação</CardTitle>
-              <CardDescription>Selecione sua titulação (não cumulativo)</CardDescription>
+              <CardDescription>Lei 15.984/2013, alterada pela Lei 19.313/2025</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="postgrad">Titulação</Label>
-                <Select value={input.postgrad} onValueChange={(value) => setInput({ ...input, postgrad: value })}>
-                  <SelectTrigger id="postgrad">
+                <Label htmlFor="performancePeriod">Período de Cálculo</Label>
+                <Select
+                  value={input.performancePeriod}
+                  onValueChange={(value) =>
+                    setInput({
+                      ...input,
+                      performancePeriod: value as "before_may_2025" | "may_to_december_2025" | "after_december_2025",
+                    })
+                  }
+                >
+                  <SelectTrigger id="performancePeriod">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(POSTGRAD_TYPES).map(([key, value]) => (
+                    {Object.entries(PERFORMANCE_PERIODS).map(([key, value]) => (
                       <SelectItem key={key} value={key}>
                         {value}
                       </SelectItem>
@@ -195,84 +164,22 @@ export function SalarySimulator() {
                 </Select>
               </div>
 
-              {input.postgrad !== "none" && (
-                <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {salary.details.postgradPercentage}% de bônus
-                  </p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    R$ {salary.postgradBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Seção 4: Insalubridade */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">4. Adicional de Insalubridade</CardTitle>
-              <CardDescription>Grau de insalubridade e tipo de setor</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="insalubrity">Grau de Insalubridade</Label>
-                  <Select
-                    value={input.insalubrity}
-                    onValueChange={(value) => setInput({ ...input, insalubrity: value })}
-                  >
-                    <SelectTrigger id="insalubrity">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(INSALUBRITY_LEVELS).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                          {value}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="sector">Tipo de Setor</Label>
-                  <Select
-                    value={input.sector}
-                    onValueChange={(value) =>
-                      setInput({ ...input, sector: value as "general" | "specific" })
-                    }
-                  >
-                    <SelectTrigger id="sector">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(INSALUBRITY_SECTORS).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                          {value}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {salary.details.performanceBonusPercentage}% do Vencimento Básico
+                </p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  R$ {salary.performanceBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </p>
               </div>
-
-              {input.insalubrity !== "none" && (
-                <div className="bg-orange-50 dark:bg-orange-950 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Adicional de Insalubridade</p>
-                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                    R$ {salary.insalubrity.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
 
-          {/* Seção 5: Triênios */}
+          {/* Seção 3: Adicional Trienal */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">5. Adicional Trienal</CardTitle>
-              <CardDescription>3% a cada 3 anos de serviço (máximo 36%)</CardDescription>
+              <CardTitle className="text-lg">3. Adicional Trienal</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 15 - 3% a cada 3 anos (máx 36%)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -301,11 +208,11 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 6: Adicionais Noturnos */}
+          {/* Seção 4: Adicional Noturno */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">6. Adicional Noturno</CardTitle>
-              <CardDescription>25% sobre horas trabalhadas entre 22h e 06h</CardDescription>
+              <CardTitle className="text-lg">4. Adicional Noturno</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 16 - 25% sobre horas 22h-06h</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -331,14 +238,14 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 7: Variáveis Extras */}
+          {/* Seção 5: Variáveis Extras */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">7. Variáveis Extras</CardTitle>
-              <CardDescription>Plantões, sobreaviso e auxílios</CardDescription>
+              <CardTitle className="text-lg">5. Variáveis Extras</CardTitle>
+              <CardDescription>Hora-Plantão e Sobreaviso conforme Lei 323/2006</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Plantões */}
+              {/* Hora-Plantão */}
               <div className="space-y-4 pb-6 border-b">
                 <h4 className="font-semibold text-sm">Hora-Plantão</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -368,7 +275,7 @@ export function SalarySimulator() {
                 </div>
                 {input.plantaoHours > 0 && (
                   <div className="bg-indigo-50 dark:bg-indigo-950 p-3 rounded">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Total de Plantões</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Total de Hora-Plantão</p>
                     <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
                       R$ {salary.plantaoTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
@@ -377,7 +284,7 @@ export function SalarySimulator() {
               </div>
 
               {/* Sobreaviso */}
-              <div className="space-y-4 pb-6 border-b">
+              <div className="space-y-4">
                 <h4 className="font-semibold text-sm">Sobreaviso</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -447,54 +354,61 @@ export function SalarySimulator() {
                   </div>
                 )}
               </div>
+            </CardContent>
+          </Card>
 
-              {/* Auxílios */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-sm">Auxílios</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="foodAllowance">Auxílio Alimentação (R$)</Label>
-                    <Input
-                      id="foodAllowance"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={input.foodAllowance}
-                      onChange={(e) => setInput({ ...input, foodAllowance: parseFloat(e.target.value) || 0 })}
-                      placeholder="550.00"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="dependents">Dependentes (para Salário-Família)</Label>
-                    <Input
-                      id="dependents"
-                      type="number"
-                      min="0"
-                      value={input.dependents}
-                      onChange={(e) => setInput({ ...input, dependents: parseInt(e.target.value) || 0 })}
-                      placeholder="0"
-                    />
-                  </div>
+          {/* Seção 6: Auxílios */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">6. Auxílios</CardTitle>
+              <CardDescription>Auxílio Alimentação e Salário-Família conforme Lei 323/2006</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="foodAllowance">Auxílio Alimentação (R$)</Label>
+                  <Input
+                    id="foodAllowance"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={input.foodAllowance}
+                    onChange={(e) => setInput({ ...input, foodAllowance: parseFloat(e.target.value) || 0 })}
+                    placeholder="550.00"
+                  />
                 </div>
-
-                {input.foodAllowance > 0 && (
-                  <div className="bg-amber-50 dark:bg-amber-950 p-3 rounded">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Auxílio Alimentação</p>
-                    <p className="text-xl font-bold text-amber-600 dark:text-amber-400">
-                      R$ {salary.foodAllowance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                    </p>
-                  </div>
-                )}
-
-                {input.dependents > 0 && (
-                  <div className="bg-rose-50 dark:bg-rose-950 p-3 rounded">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Salário-Família ({input.dependents} dependente{input.dependents > 1 ? "s" : ""})</p>
-                    <p className="text-xl font-bold text-rose-600 dark:text-rose-400">
-                      R$ {salary.salaryFamily.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                    </p>
-                  </div>
-                )}
+                <div className="space-y-2">
+                  <Label htmlFor="dependents">Dependentes (Salário-Família)</Label>
+                  <Input
+                    id="dependents"
+                    type="number"
+                    min="0"
+                    value={input.dependents}
+                    onChange={(e) => setInput({ ...input, dependents: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                  />
+                </div>
               </div>
+
+              {input.foodAllowance > 0 && (
+                <div className="bg-amber-50 dark:bg-amber-950 p-3 rounded">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Auxílio Alimentação</p>
+                  <p className="text-xl font-bold text-amber-600 dark:text-amber-400">
+                    R$ {salary.foodAllowance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+              )}
+
+              {input.dependents > 0 && (
+                <div className="bg-rose-50 dark:bg-rose-950 p-3 rounded">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Salário-Família ({input.dependents} dependente{input.dependents > 1 ? "s" : ""})
+                  </p>
+                  <p className="text-xl font-bold text-rose-600 dark:text-rose-400">
+                    R$ {salary.salaryFamily.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -518,19 +432,19 @@ export function SalarySimulator() {
                       R$ {salary.performanceBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
                   </div>
-                  {salary.postgradBonus > 0 && (
+                  {salary.triennialBonus > 0 && (
                     <div>
-                      <p className="text-gray-600 dark:text-gray-400">Pós-Grad</p>
+                      <p className="text-gray-600 dark:text-gray-400">Triênio</p>
                       <p className="font-semibold">
-                        R$ {salary.postgradBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                        R$ {salary.triennialBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   )}
-                  {salary.insalubrity > 0 && (
+                  {salary.nighttimeAdditional > 0 && (
                     <div>
-                      <p className="text-gray-600 dark:text-gray-400">Insalubridade</p>
+                      <p className="text-gray-600 dark:text-gray-400">Noturno</p>
                       <p className="font-semibold">
-                        R$ {salary.insalubrity.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                        R$ {salary.nighttimeAdditional.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   )}
@@ -553,62 +467,6 @@ export function SalarySimulator() {
                   <Plus className="w-4 h-4" />
                   Adicionar ao Histórico
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Projeção de Carreira */}
-        <TabsContent value="projection" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Projeção de Carreira - 10 Anos</CardTitle>
-              <CardDescription>
-                Alternância automática entre progressão horizontal (letra) e vertical (nível)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-100 dark:bg-slate-800">
-                    <tr>
-                      <th className="px-3 py-2 text-left font-semibold">Ano</th>
-                      <th className="px-3 py-2 text-left font-semibold">Nível-Letra</th>
-                      <th className="px-3 py-2 text-left font-semibold">Tipo</th>
-                      <th className="px-3 py-2 text-right font-semibold">Mensal</th>
-                      <th className="px-3 py-2 text-right font-semibold">Anual</th>
-                      <th className="px-3 py-2 text-right font-semibold">Férias (1/3)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                    {careerProjection.map((year) => (
-                      <tr key={year.year} className="hover:bg-slate-50 dark:hover:bg-slate-800">
-                        <td className="px-3 py-2 font-semibold">{year.year}</td>
-                        <td className="px-3 py-2">
-                          <span className="font-semibold">{year.level}-{year.letter}</span>
-                        </td>
-                        <td className="px-3 py-2">
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            year.progressionType === "horizontal" ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200" :
-                            year.progressionType === "vertical" ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200" :
-                            "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                          }`}>
-                            {year.progressionType === "horizontal" ? "Letra" : year.progressionType === "vertical" ? "Nível" : "-"}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2 text-right">
-                          R$ {year.monthlyGrossSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                        </td>
-                        <td className="px-3 py-2 text-right">
-                          R$ {year.annualGrossSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                        </td>
-                        <td className="px-3 py-2 text-right">
-                          R$ {year.vacationWithThirds.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
               </div>
             </CardContent>
           </Card>
@@ -637,7 +495,7 @@ export function SalarySimulator() {
                             {item.timestamp.toLocaleString("pt-BR")}
                           </p>
                           <p className="text-sm">
-                            <span className="font-semibold">Nível {item.input.level}</span> - Letra{" "}
+                            <span className="font-semibold">Nível {item.input.level}</span> - Referência{" "}
                             <span className="font-semibold">{item.input.letter}</span> •{" "}
                             <span className="font-semibold">{item.input.yearsOfService}</span> anos de serviço
                           </p>
