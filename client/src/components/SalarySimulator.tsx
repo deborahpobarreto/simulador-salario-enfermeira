@@ -20,7 +20,7 @@ import {
   projectCareer,
 } from "@/../../shared/salaryData";
 import { useSalaryCalculator, type SalaryCalculatorInput } from "@/hooks/useSalaryCalculator";
-import { Trash2, Plus, BookOpen } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 interface SimulationHistory {
@@ -97,14 +97,10 @@ export function SalarySimulator() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="simulator" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="simulator">Simulador</TabsTrigger>
           <TabsTrigger value="carreira">Carreira</TabsTrigger>
           <TabsTrigger value="history">Histórico ({history.length})</TabsTrigger>
-          <TabsTrigger value="info" className="gap-1">
-            <BookOpen className="w-4 h-4" />
-            Info
-          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="simulator" className="space-y-6">
@@ -745,162 +741,7 @@ export function SalarySimulator() {
           )}
         </TabsContent>
 
-        {/* Informações */}
-        <TabsContent value="info" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Aproveitamento de Tempo de Serviço Anterior</CardTitle>
-              <CardDescription>Lei Complementar 323/2006, Art. 33</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 text-sm">
-              <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg space-y-2">
-                <h4 className="font-semibold">O que diz a Lei?</h4>
-                <p>
-                  O tempo de serviço anterior prestado em órgão ou entidade da Administração Pública do Estado de Santa Catarina, ou de outro ente federado, em cargo ou função pública, será contado para fins de:
-                </p>
-              </div>
 
-              <div className="space-y-3">
-                <h4 className="font-semibold">Tempo Anterior Conta Para:</h4>
-                <ul className="space-y-2 list-disc list-inside">
-                  <li>
-                    <strong>Progressão Horizontal (Letra):</strong> A cada 2 anos sobe uma letra (Art. 8º)
-                  </li>
-                  <li>
-                    <strong>Progressão Vertical (Nível):</strong> Com 120 horas de capacitação (Art. 9º)
-                  </li>
-                  <li>
-                    <strong>Licença-Prêmio:</strong> Para calcular quando tem direito (Art. 20)
-                  </li>
-                  <li>
-                    <strong>Aposentadoria:</strong> Para cálculo de tempo total
-                  </li>
-                  <li>
-                    <strong>Outros direitos:</strong> Previstos em lei
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-red-50 dark:bg-red-950 p-4 rounded-lg space-y-2">
-                <h4 className="font-semibold text-red-900 dark:text-red-100">Importante!</h4>
-                <p className="text-red-900 dark:text-red-100">
-                  <strong>Tempo em Licença-Prêmio NÃO conta para progressão:</strong> Quando você goza a Licença-Prêmio (3 meses a cada 5 anos), esse período não é contado como tempo de serviço para fins de progressão de letra/nível.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Progressão de Carreira</CardTitle>
-              <CardDescription>Lei Complementar 323/2006, Art. 8º e 9º</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 text-sm">
-              <div className="space-y-3">
-                <h4 className="font-semibold">Progressão Horizontal (Mudança de Letra)</h4>
-                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded">
-                  <p><strong>Frequência:</strong> A cada 2 anos de serviço</p>
-                  <p><strong>Sequência:</strong> A → B → C → D → E → F → G → H → I → J</p>
-                  <p><strong>Automática:</strong> Não requer aprovação, é automática</p>
-                  <p><strong>Fonte:</strong> Lei Complementar 323/2006, Art. 8º</p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">Progressão Vertical (Mudança de Nível)</h4>
-                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded">
-                  <p><strong>Requisito:</strong> 120 horas de capacitação profissional</p>
-                  <p><strong>Frequência:</strong> Conforme disponibilidade de vagas</p>
-                  <p><strong>Seleção:</strong> Mediante avaliação de desempenho</p>
-                  <p><strong>Fonte:</strong> Lei Complementar 323/2006, Art. 9º</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Componentes do Salário</CardTitle>
-              <CardDescription>Lei Complementar 323/2006</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 text-sm">
-              <div className="space-y-3">
-                <h4 className="font-semibold">1. Vencimento Básico (Lei 19.313/2025)</h4>
-                <p>Valor conforme tabela de vencimentos para o Nível e Referência (Letra)</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">2. Gratificação de Desempenho (Lei 15.984/2013, alterada por Lei 19.313/2025)</h4>
-                <p>70% até 30/04/2025 | 80% de 01/05 a 30/11/2025 | 90% a partir de 01/12/2025</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">3. Adicional de Pós-Graduação (Art. 14 - Não Cumulativo)</h4>
-                <p>Especialização: 13% | Mestrado: 16% | Doutorado: 19%</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">4. Adicional Trienal (Art. 15)</h4>
-                <p>3% a cada 3 anos de serviço, máximo 36% (12 triênios)</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">5. Adicional Noturno (Art. 11)</h4>
-                <p>25% sobre valor da hora trabalhada entre 22h-06h</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">6. Hora-Plantão (Art. 16)</h4>
-                <p>Valor por hora conforme portaria. Período aguardando chamada no local de trabalho</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">7. Sobreaviso (Art. 17)</h4>
-                <p>100% se convocado | 50% se não convocado. Máximo 200 horas/mês</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">8. Auxílio Alimentação (Art. 18)</h4>
-                <p>Valor fixo mensal (indenizatório)</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">9. Salário-Família (Art. 19)</h4>
-                <p>5% do salário mínimo por dependente</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">10. Férias (Art. 21)</h4>
-                <p>30 dias anuais + 1/3 do salário durante as férias</p>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-semibold">11. Licença-Prêmio (Art. 20)</h4>
-                <p>A cada 5 anos: 3 meses remunerados (não conversível em dinheiro)</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Legislação Aplicável</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              <p>
-                <strong>Lei Complementar nº 323/2006:</strong> Estabelece a estrutura de carreira de enfermagem do Estado de Santa Catarina
-              </p>
-              <p>
-                <strong>Lei nº 19.313/2025:</strong> Atualiza a tabela de vencimentos (16 níveis) e altera a Gratificação de Desempenho
-              </p>
-              <p>
-                <strong>Lei nº 15.984/2013:</strong> Institui a Gratificação de Desempenho em Saúde
-              </p>
-              <p>
-                <strong>Lei nº 18.371/2022:</strong> Altera a Gratificação de Desempenho para 70%
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   );
