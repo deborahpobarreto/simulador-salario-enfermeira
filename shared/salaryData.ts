@@ -282,7 +282,7 @@ export const POST_GRADUATION_PERCENTAGES: Record<string, number> = {
  */
 export const INSALUBRITY_PERCENTAGES: Record<string, Record<string, number>> = {
   "general": {
-    "minimum": 0.13, // 13% - conforme edital
+    "minimum": 0.12, // 12% - conforme edital
     "medium": 0.17, // 17%
     "maximum": 0.23, // 23%
   },
