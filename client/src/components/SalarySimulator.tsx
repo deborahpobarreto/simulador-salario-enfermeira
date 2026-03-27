@@ -19,7 +19,7 @@ import {
   projectCareer,
 } from "@/../../shared/salaryData";
 import { useSalaryCalculator, type SalaryCalculatorInput } from "@/hooks/useSalaryCalculator";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 
 interface SimulationHistory {
@@ -96,10 +96,14 @@ export function SalarySimulator() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="simulator" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="simulator">Simulador</TabsTrigger>
           <TabsTrigger value="carreira">Carreira</TabsTrigger>
           <TabsTrigger value="history">Histórico ({history.length})</TabsTrigger>
+          <TabsTrigger value="info" className="gap-1">
+            <BookOpen className="w-4 h-4" />
+            Info
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="simulator" className="space-y-6">
@@ -674,8 +678,8 @@ export function SalarySimulator() {
           )}
         </TabsContent>
 
-        {/* Informações - ABA REMOVIDA */}
-        {/* <TabsContent value="info" className="space-y-4">
+        {/* Informações */}
+        <TabsContent value="info" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Aproveitamento de Tempo de Serviço Anterior</CardTitle>
@@ -829,7 +833,7 @@ export function SalarySimulator() {
               </p>
             </CardContent>
           </Card>
-        </TabsContent> */}
+        </TabsContent>
       </Tabs>
     </div>
   );
