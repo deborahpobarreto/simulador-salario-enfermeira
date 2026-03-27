@@ -1,174 +1,172 @@
-import { useMemo } from "react";
-import {
-  BASIC_SALARY,
-  NIGHTTIME_ADDITIONAL_PERCENTAGE,
-  TRIENNIAL_BONUS,
-  PERFORMANCE_BONUS_PERCENTAGE,
-  DEFAULT_FOOD_ALLOWANCE,
-} from "@/../../shared/salaryData";
+/**
+ * Hook de Cálculo de Salário
+ * Lei Complementar 323/2006 e Lei 19.313/2025
+ * 
+ * Implementa cálculos conforme legislação, sem interpretações adicionais
+ */
 
+import {
+  SALARY_TABLE,
+  PERFORMANCE_BONUS_PERCENTAGE,
+  POST_GRADUATION_PERCENTAGES,
+  NIGHTTIME_ADDITIONAL_PERCENTAGE,
+  TRIENAL_PERCENTAGE_PER_3_YEARS,
+  TRIENAL_MAXIMUM_PERCENTAGE,
+  SALARY_FAMILY_PERCENTAGE,
+  MINIMUM_WAGE_2025,
+  VACATION_THIRDS_PERCENTAGE,
+} from "@/../../shared/salaryData";
+import { useMemo } from "react";
+
+/**
+ * Interface de entrada para cálculo
+ * Lei Complementar 323/2006
+ */
 export interface SalaryCalculatorInput {
-  // Identificação do cargo
-  level: number; // 1-16
+  // Identificação do cargo (Lei 19.313/2025)
+  level: number; // 13-16 para Enfermeiro
   letter: string; // A-J
-  
+
   // Tempo de serviço
-  yearsOfPreviousService: number; // Tempo anterior como servidor público
+  yearsOfPreviousService: number; // Tempo anterior (Art. 33)
   yearsOfService: number; // Tempo na posição atual
-  
-  // Período para cálculo de gratificação
+
+  // Período para cálculo de gratificação (Lei 19.313/2025)
   performancePeriod: "before_may_2025" | "may_to_december_2025" | "after_december_2025";
-  
-  // Variáveis conforme Lei 323/2006
-  nighttimeHours: number; // Horas 22h-06h
-  plantaoHours: number; // Hora-plantão
+
+  // Pós-Graduação (Art. 14 - não cumulativo)
+  postGraduation: "none" | "specialization" | "masters" | "doctorate";
+
+  // Adicional Noturno (Art. 11)
+  nighttimeHours: number; // Horas entre 22h-06h
+
+  // Hora-Plantão (Art. 16)
+  plantaoHours: number;
   plantaoHourlyRate: number;
+
+  // Sobreaviso (Art. 17)
   sobreaviso: {
-    hours: number;
+    hours: number; // Máximo 200/mês
     hourlyRate: number;
     convoked: boolean; // true = 100%, false = 50%
   };
-  
+
   // Auxílios
-  foodAllowance: number;
-  dependents: number;
+  foodAllowance: number; // Art. 18
+  dependents: number; // Para Salário-Família (Art. 19)
 }
 
-export interface SalaryBreakdown {
-  // Componentes fixos (Lei 323/2006)
+/**
+ * Interface de saída com detalhes do cálculo
+ */
+export interface SalaryCalculatorOutput {
+  // Componentes principais
   basicSalary: number;
-  performanceBonus: number; // Gratificação de Desempenho (Lei 15.984/2013, alterada por Lei 19.313/2025)
-  triennialBonus: number; // Adicional Trienal (Art. 15)
-  nighttimeAdditional: number; // Adicional Noturno (Art. 16) - 25%
-  
-  // Variáveis (Lei 323/2006)
-  plantaoTotal: number; // Hora-plantão
-  sobreavisoTotal: number; // Sobreaviso
-  
-  // Auxílios (Lei 323/2006)
-  foodAllowance: number; // Auxílio Alimentação
-  salaryFamily: number; // Salário-Família
-  
-  // Totais
+  performanceBonus: number;
+  postGraduationBonus: number;
+  triennialBonus: number;
+  nighttimeAdditional: number;
+  plantaoTotal: number;
+  sobreavisoTotal: number;
+  foodAllowance: number;
+  salaryFamily: number;
+
+  // Totalizadores
   monthlyGrossSalary: number;
   annualGrossSalary: number;
-  vacationWithThirds: number; // Férias + 1/3
-  
+  vacationWithThirds: number;
+
+  // Detalhes
   details: {
-    basicSalaryValue: number;
     performanceBonusPercentage: number;
-    performanceBonusValue: number;
+    postGraduationPercentage: number;
     triennialPercentage: number;
-    triennialValue: number;
-    nighttimeHours: number;
-    nighttimePercentage: number;
-    nighttimeAdditionalValue: number;
-    plantaoHours: number;
-    plantaoHourlyRate: number;
-    plantaoTotal: number;
-    sobreavisoHours: number;
-    sobreavisoHourlyRate: number;
-    sobreavisoPercentage: number;
-    sobreavisoTotal: number;
-    foodAllowance: number;
-    dependents: number;
-    salaryFamilyPercentage: number;
-    salaryFamilyValue: number;
+    triennialYears: number;
   };
 }
 
-// Salário mínimo estadual de referência para Salário-Família
-const STATE_MINIMUM_SALARY = 1412.0;
-
-export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryBreakdown {
+/**
+ * Hook para cálculo de salário
+ * Implementa Lei Complementar 323/2006 e Lei 19.313/2025
+ */
+export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalculatorOutput {
   return useMemo(() => {
-    // 1. Vencimento Básico (Lei 19.313/2025 - Anexo III)
-    const basicSalaryValue =
-      BASIC_SALARY[input.level as keyof typeof BASIC_SALARY]?.[
-        input.letter as keyof (typeof BASIC_SALARY)[1]
-      ] || 0;
+    // 1. Vencimento Básico (Lei 19.313/2025)
+    const basicSalary = SALARY_TABLE[input.level.toString()]?.[input.letter] || 0;
 
-    // 2. Gratificação de Desempenho em Saúde (Lei 15.984/2013, alterada por Lei 19.313/2025)
-    // § 4º: 80% (1º maio 2025) e 90% (1º dezembro 2025)
-    const performanceBonusPercentage =
-      PERFORMANCE_BONUS_PERCENTAGE[
-        input.performancePeriod as keyof typeof PERFORMANCE_BONUS_PERCENTAGE
-      ] || 0.70;
-    const performanceBonusValue = basicSalaryValue * performanceBonusPercentage;
+    // 2. Gratificação de Desempenho (Lei 15.984/2013, alterada por Lei 19.313/2025)
+    const performanceBonusPercentage = PERFORMANCE_BONUS_PERCENTAGE[input.performancePeriod] || 0.70;
+    const performanceBonus = basicSalary * performanceBonusPercentage;
 
-    // 3. Adicional Trienal (Lei 323/2006, Art. 15)
-    // 3% sobre vencimento básico a cada 3 anos, até 36%
-    const triennialPercentage = TRIENNIAL_BONUS(input.yearsOfService);
-    const triennialValue = (basicSalaryValue * triennialPercentage) / 100;
+    // 3. Adicional de Pós-Graduação (Art. 14 - não cumulativo)
+    const postGraduationPercentage = POST_GRADUATION_PERCENTAGES[input.postGraduation] || 0;
+    const postGraduationBonus = basicSalary * postGraduationPercentage;
 
-    // 4. Adicional Noturno (Lei 323/2006, Art. 16)
-    // 25% sobre hora trabalhada entre 22h e 06h
-    const hourlyRate = basicSalaryValue / 160; // 160 horas/mês
-    const nighttimeAdditionalValue =
-      hourlyRate * NIGHTTIME_ADDITIONAL_PERCENTAGE * input.nighttimeHours;
+    // 4. Adicional Trienal (Art. 15)
+    // 3% a cada 3 anos, máximo 36%
+    const totalYearsOfService = input.yearsOfPreviousService + input.yearsOfService;
+    const triennialYears = Math.floor(totalYearsOfService / 3);
+    const triennialPercentage = Math.min(
+      triennialYears * TRIENAL_PERCENTAGE_PER_3_YEARS,
+      TRIENAL_MAXIMUM_PERCENTAGE
+    );
+    const triennialBonus = basicSalary * triennialPercentage;
 
-    // 5. Hora-Plantão (Lei 323/2006)
+    // 5. Adicional Noturno (Art. 11)
+    // 25% sobre valor da hora trabalhada entre 22h-06h
+    const hourlyRate = basicSalary / 220; // Aproximadamente 220 horas/mês
+    const nighttimeAdditional = input.nighttimeHours * hourlyRate * NIGHTTIME_ADDITIONAL_PERCENTAGE;
+
+    // 6. Hora-Plantão (Art. 16)
     const plantaoTotal = input.plantaoHours * input.plantaoHourlyRate;
 
-    // 6. Sobreaviso (Lei 323/2006)
-    // 50% se não convocado, 100% se convocado
-    const sobreavisoMultiplier = input.sobreaviso.convoked ? 1 : 0.5;
-    const sobreavisoTotal =
-      input.sobreaviso.hours * input.sobreaviso.hourlyRate * sobreavisoMultiplier;
+    // 7. Sobreaviso (Art. 17)
+    // 100% se convocado, 50% se não convocado
+    const sobreavisoPercentage = input.sobreaviso.convoked ? 1.0 : 0.5;
+    const sobreavisoTotal = input.sobreaviso.hours * input.sobreaviso.hourlyRate * sobreavisoPercentage;
 
-    // 7. Auxílio Alimentação (Lei 323/2006)
-    const foodAllowanceValue = input.foodAllowance;
+    // 8. Auxílio Alimentação (Art. 18)
+    const foodAllowance = input.foodAllowance;
 
-    // 8. Salário-Família (Lei 323/2006)
+    // 9. Salário-Família (Art. 19)
     // 5% do salário mínimo por dependente
-    const salaryFamilyValue = STATE_MINIMUM_SALARY * 0.05 * input.dependents;
+    const salaryFamily = input.dependents * (MINIMUM_WAGE_2025 * SALARY_FAMILY_PERCENTAGE);
 
-    // Cálculos de totais
+    // Totalizadores
     const monthlyGrossSalary =
-      basicSalaryValue +
-      performanceBonusValue +
-      triennialValue +
-      nighttimeAdditionalValue +
+      basicSalary +
+      performanceBonus +
+      postGraduationBonus +
+      triennialBonus +
+      nighttimeAdditional +
       plantaoTotal +
       sobreavisoTotal +
-      foodAllowanceValue +
-      salaryFamilyValue;
+      foodAllowance +
+      salaryFamily;
 
     const annualGrossSalary = monthlyGrossSalary * 12;
-    const vacationWithThirds = monthlyGrossSalary + monthlyGrossSalary / 3;
+
+    // Férias com 1/3 (Art. 21)
+    const vacationWithThirds = monthlyGrossSalary * VACATION_THIRDS_PERCENTAGE;
 
     return {
-      basicSalary: basicSalaryValue,
-      performanceBonus: performanceBonusValue,
-      triennialBonus: triennialValue,
-      nighttimeAdditional: nighttimeAdditionalValue,
+      basicSalary,
+      performanceBonus,
+      postGraduationBonus,
+      triennialBonus,
+      nighttimeAdditional,
       plantaoTotal,
       sobreavisoTotal,
-      foodAllowance: foodAllowanceValue,
-      salaryFamily: salaryFamilyValue,
+      foodAllowance,
+      salaryFamily,
       monthlyGrossSalary,
       annualGrossSalary,
       vacationWithThirds,
       details: {
-        basicSalaryValue,
-        performanceBonusPercentage: performanceBonusPercentage * 100,
-        performanceBonusValue,
+        performanceBonusPercentage,
+        postGraduationPercentage,
         triennialPercentage,
-        triennialValue,
-        nighttimeHours: input.nighttimeHours,
-        nighttimePercentage: NIGHTTIME_ADDITIONAL_PERCENTAGE * 100,
-        nighttimeAdditionalValue,
-        plantaoHours: input.plantaoHours,
-        plantaoHourlyRate: input.plantaoHourlyRate,
-        plantaoTotal,
-        sobreavisoHours: input.sobreaviso.hours,
-        sobreavisoHourlyRate: input.sobreaviso.hourlyRate,
-        sobreavisoPercentage: sobreavisoMultiplier * 100,
-        sobreavisoTotal,
-        foodAllowance: foodAllowanceValue,
-        dependents: input.dependents,
-        salaryFamilyPercentage: 5,
-        salaryFamilyValue,
+        triennialYears,
       },
     };
   }, [input]);

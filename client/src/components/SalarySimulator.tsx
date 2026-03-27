@@ -37,6 +37,7 @@ export function SalarySimulator() {
     yearsOfPreviousService: 0,
     yearsOfService: 0,
     performancePeriod: "after_december_2025",
+    postGraduation: "none",
     nighttimeHours: 0,
     plantaoHours: 0,
     plantaoHourlyRate: 50,
@@ -127,7 +128,7 @@ export function SalarySimulator() {
                   placeholder="Digite o número de anos"
                 />
                 <p className="text-xs text-gray-600 dark:text-gray-400">
-                  A cada 2 anos de serviço anterior, você sobe uma letra automaticamente
+                  A cada 2 anos de serviço anterior, você sobe uma letra automaticamente (Art. 8º)
                 </p>
               </div>
 
@@ -149,12 +150,12 @@ export function SalarySimulator() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">1. Identificação do Cargo</CardTitle>
-              <CardDescription>Conforme Lei Complementar 323/2006 e Lei 19.313/2025</CardDescription>
+              <CardDescription>Lei 19.313/2025 - Tabela de Vencimentos</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="level">Nível (1-16)</Label>
+                  <Label htmlFor="level">Nível (13-16)</Label>
                   <Select
                     value={input.level.toString()}
                     onValueChange={(value) =>
@@ -204,7 +205,7 @@ export function SalarySimulator() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">2. Gratificação de Desempenho em Saúde</CardTitle>
-              <CardDescription>Lei 15.984/2013, alterada pela Lei 19.313/2025</CardDescription>
+              <CardDescription>Lei 15.984/2013, alterada por Lei 19.313/2025</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -233,7 +234,7 @@ export function SalarySimulator() {
 
               <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {salary.details.performanceBonusPercentage}% do Vencimento Básico
+                  {(salary.details.performanceBonusPercentage * 100).toFixed(0)}% do Vencimento Básico
                 </p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                   R$ {salary.performanceBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
@@ -242,10 +243,56 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 3: Adicional Trienal */}
+          {/* Seção 3: Pós-Graduação */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">3. Adicional Trienal</CardTitle>
+              <CardTitle className="text-lg">3. Adicional de Pós-Graduação</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 14 - Não Cumulativo</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="postGraduation">Qualificação Profissional</Label>
+                <Select
+                  value={input.postGraduation}
+                  onValueChange={(value) =>
+                    setInput({
+                      ...input,
+                      postGraduation: value as "none" | "specialization" | "masters" | "doctorate",
+                    })
+                  }
+                >
+                  <SelectTrigger id="postGraduation">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Nenhuma</SelectItem>
+                    <SelectItem value="specialization">Especialização (13%)</SelectItem>
+                    <SelectItem value="masters">Mestrado (16%)</SelectItem>
+                    <SelectItem value="doctorate">Doutorado (19%)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  Não cumulativo: apenas um tipo de pós-graduação por vez
+                </p>
+              </div>
+
+              {salary.postGraduationBonus > 0 && (
+                <div className="bg-purple-50 dark:bg-purple-950 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {(salary.details.postGraduationPercentage * 100).toFixed(0)}% do Vencimento Básico
+                  </p>
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    R$ {salary.postGraduationBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Seção 4: Adicional Trienal */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">4. Adicional Trienal</CardTitle>
               <CardDescription>Lei Complementar 323/2006, Art. 15 - 3% a cada 3 anos (máx 36%)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -260,12 +307,15 @@ export function SalarySimulator() {
                   onChange={(e) => setInput({ ...input, yearsOfService: parseFloat(e.target.value) || 0 })}
                   placeholder="Digite o número de anos"
                 />
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  Inclui tempo anterior (Art. 33). Máximo 36% (12 triênios)
+                </p>
               </div>
 
-              {input.yearsOfService > 0 && (
+              {salary.triennialBonus > 0 && (
                 <div className="bg-purple-50 dark:bg-purple-950 p-4 rounded-lg">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {salary.details.triennialPercentage}% de bônus ({Math.floor(input.yearsOfService / 3)} triênios)
+                    {(salary.details.triennialPercentage * 100).toFixed(0)}% de bônus ({salary.details.triennialYears} triênios)
                   </p>
                   <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                     R$ {salary.triennialBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
@@ -275,11 +325,11 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 4: Adicional Noturno */}
+          {/* Seção 5: Adicional Noturno */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">4. Adicional Noturno</CardTitle>
-              <CardDescription>Lei Complementar 323/2006, Art. 16 - 25% sobre horas 22h-06h</CardDescription>
+              <CardTitle className="text-lg">5. Adicional Noturno</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 11 - 25% sobre horas 22h-06h</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -305,16 +355,16 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 5: Variáveis Extras */}
+          {/* Seção 6: Hora-Plantão e Sobreaviso */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">5. Variáveis Extras</CardTitle>
-              <CardDescription>Hora-Plantão e Sobreaviso conforme Lei 323/2006</CardDescription>
+              <CardTitle className="text-lg">6. Hora-Plantão e Sobreaviso</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 16 e 17</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Hora-Plantão */}
               <div className="space-y-4 pb-6 border-b">
-                <h4 className="font-semibold text-sm">Hora-Plantão</h4>
+                <h4 className="font-semibold text-sm">Hora-Plantão (Art. 16)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="plantaoHours">Horas de Plantão</Label>
@@ -352,7 +402,7 @@ export function SalarySimulator() {
 
               {/* Sobreaviso */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-sm">Sobreaviso</h4>
+                <h4 className="font-semibold text-sm">Sobreaviso (Art. 17)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="sobreavisoHours">Horas de Sobreaviso</Label>
@@ -424,16 +474,16 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 6: Auxílios */}
+          {/* Seção 7: Auxílios */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">6. Auxílios</CardTitle>
-              <CardDescription>Auxílio Alimentação e Salário-Família conforme Lei 323/2006</CardDescription>
+              <CardTitle className="text-lg">7. Auxílios</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 18 e 19</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="foodAllowance">Auxílio Alimentação (R$)</Label>
+                  <Label htmlFor="foodAllowance">Auxílio Alimentação (Art. 18) - R$</Label>
                   <Input
                     id="foodAllowance"
                     type="number"
@@ -445,7 +495,7 @@ export function SalarySimulator() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dependents">Dependentes (Salário-Família)</Label>
+                  <Label htmlFor="dependents">Dependentes (Salário-Família Art. 19)</Label>
                   <Input
                     id="dependents"
                     type="number"
@@ -499,19 +549,19 @@ export function SalarySimulator() {
                       R$ {salary.performanceBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
                   </div>
+                  {salary.postGraduationBonus > 0 && (
+                    <div>
+                      <p className="text-gray-600 dark:text-gray-400">Pós-Grad</p>
+                      <p className="font-semibold">
+                        R$ {salary.postGraduationBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                  )}
                   {salary.triennialBonus > 0 && (
                     <div>
                       <p className="text-gray-600 dark:text-gray-400">Triênio</p>
                       <p className="font-semibold">
                         R$ {salary.triennialBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
-                  )}
-                  {salary.nighttimeAdditional > 0 && (
-                    <div>
-                      <p className="text-gray-600 dark:text-gray-400">Noturno</p>
-                      <p className="font-semibold">
-                        R$ {salary.nighttimeAdditional.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   )}
@@ -526,7 +576,7 @@ export function SalarySimulator() {
                     Anual: R$ {salary.annualGrossSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Férias com 1/3: R$ {salary.vacationWithThirds.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    Férias com 1/3 (Art. 21): R$ {salary.vacationWithThirds.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </p>
                 </div>
 
@@ -545,7 +595,7 @@ export function SalarySimulator() {
             <CardHeader>
               <CardTitle>Projeção de Carreira (10 Anos)</CardTitle>
               <CardDescription>
-                Progressão Horizontal (letra a cada 2 anos) e Vertical (nível a cada 5 anos com 120h capacitação)
+                Progressão Horizontal: A cada 2 anos sobe uma letra (Lei Complementar 323/2006, Art. 8º)
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -637,49 +687,38 @@ export function SalarySimulator() {
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
               <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg space-y-2">
-                <h4 className="font-semibold">✓ É Real!</h4>
+                <h4 className="font-semibold">O que diz a Lei?</h4>
                 <p>
-                  Sim, sua amiga está correta! O tempo que você trabalhou como servidora pública antes conta para progressão automática de letra.
+                  O tempo de serviço anterior prestado em órgão ou entidade da Administração Pública do Estado de Santa Catarina, ou de outro ente federado, em cargo ou função pública, será contado para fins de:
                 </p>
               </div>
 
               <div className="space-y-3">
-                <h4 className="font-semibold">Como Funciona:</h4>
+                <h4 className="font-semibold">Tempo Anterior Conta Para:</h4>
                 <ul className="space-y-2 list-disc list-inside">
                   <li>
-                    <strong>Progressão Horizontal (Letra):</strong> A cada 2 anos de serviço, você sobe uma letra (A→B→C→...→J)
+                    <strong>Progressão Horizontal (Letra):</strong> A cada 2 anos sobe uma letra (Art. 8º)
                   </li>
                   <li>
-                    <strong>Tempo Anterior Contado:</strong> Todo o tempo que você trabalhou como servidor público antes entra nessa contagem
+                    <strong>Progressão Vertical (Nível):</strong> Com 120 horas de capacitação (Art. 9º)
                   </li>
                   <li>
-                    <strong>Automático:</strong> Você não precisa fazer nada, o tempo é aproveitado automaticamente
+                    <strong>Licença-Prêmio:</strong> Para calcular quando tem direito (Art. 20)
+                  </li>
+                  <li>
+                    <strong>Aposentadoria:</strong> Para cálculo de tempo total
+                  </li>
+                  <li>
+                    <strong>Outros direitos:</strong> Previstos em lei
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg space-y-2">
-                <h4 className="font-semibold">Exemplo Prático:</h4>
-                <p>
-                  Se você trabalhou <strong>6 anos</strong> como servidora pública antes de entrar como Enfermeira:
+              <div className="bg-red-50 dark:bg-red-950 p-4 rounded-lg space-y-2">
+                <h4 className="font-semibold text-red-900 dark:text-red-100">Importante!</h4>
+                <p className="text-red-900 dark:text-red-100">
+                  <strong>Tempo em Licença-Prêmio NÃO conta para progressão:</strong> Quando você goza a Licença-Prêmio (3 meses a cada 5 anos), esse período não é contado como tempo de serviço para fins de progressão de letra/nível.
                 </p>
-                <ul className="space-y-1 list-disc list-inside text-xs">
-                  <li>6 anos ÷ 2 = 3 progressões de letra</li>
-                  <li>Você entra como Enfermeira Nível 13 na <strong>letra D</strong> (não na letra A)</li>
-                  <li>Depois de 2 anos na função, sobe para letra E</li>
-                  <li>E assim por diante...</li>
-                </ul>
-              </div>
-
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-2">O Tempo Anterior Conta Para:</h4>
-                <ul className="space-y-1 list-disc list-inside text-xs">
-                  <li>Progressão horizontal (mudança de letra) ✓</li>
-                  <li>Progressão vertical (mudança de nível com 120h capacitação) ✓</li>
-                  <li>Concessão de licença-prêmio ✓</li>
-                  <li>Aposentadoria ✓</li>
-                  <li>Outros direitos previstos em lei ✓</li>
-                </ul>
               </div>
             </CardContent>
           </Card>
@@ -687,86 +726,90 @@ export function SalarySimulator() {
           <Card>
             <CardHeader>
               <CardTitle>Progressão de Carreira</CardTitle>
-              <CardDescription>Lei Complementar 323/2006</CardDescription>
+              <CardDescription>Lei Complementar 323/2006, Art. 8º e 9º</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
               <div className="space-y-3">
-                <h4 className="font-semibold">Progressão Horizontal (Letra)</h4>
-                <p>
-                  <strong>Frequência:</strong> A cada 2 anos de serviço<br />
-                  <strong>Sequência:</strong> A → B → C → D → E → F → G → H → I → J<br />
-                  <strong>Automática:</strong> Não requer capacitação adicional
-                </p>
+                <h4 className="font-semibold">Progressão Horizontal (Mudança de Letra)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded">
+                  <p><strong>Frequência:</strong> A cada 2 anos de serviço</p>
+                  <p><strong>Sequência:</strong> A → B → C → D → E → F → G → H → I → J</p>
+                  <p><strong>Automática:</strong> Não requer aprovação, é automática</p>
+                  <p><strong>Fonte:</strong> Lei Complementar 323/2006, Art. 8º</p>
+                </div>
               </div>
 
               <div className="space-y-3">
-                <h4 className="font-semibold">Progressão Vertical (Nível)</h4>
-                <p>
-                  <strong>Requisito:</strong> 120 horas de capacitação profissional<br />
-                  <strong>Frequência:</strong> Conforme disponibilidade de vagas e capacitação<br />
-                  <strong>Seleção:</strong> Mediante avaliação de desempenho
-                </p>
-              </div>
-
-              <div className="bg-amber-50 dark:bg-amber-950 p-4 rounded-lg space-y-2">
-                <h4 className="font-semibold">Importante:</h4>
-                <p>
-                  A progressão vertical (mudança de nível) requer 120 horas de capacitação profissional. Você pode fazer cursos, especialização, mestrado, etc. para cumprir esse requisito.
-                </p>
+                <h4 className="font-semibold">Progressão Vertical (Mudança de Nível)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded">
+                  <p><strong>Requisito:</strong> 120 horas de capacitação profissional</p>
+                  <p><strong>Frequência:</strong> Conforme disponibilidade de vagas</p>
+                  <p><strong>Seleção:</strong> Mediante avaliação de desempenho</p>
+                  <p><strong>Fonte:</strong> Lei Complementar 323/2006, Art. 9º</p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Adicionais e Benefícios</CardTitle>
-              <CardDescription>Lei Complementar 323/2006 e Lei 19.313/2025</CardDescription>
+              <CardTitle>Componentes do Salário</CardTitle>
+              <CardDescription>Lei Complementar 323/2006</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
-              <div className="space-y-2">
-                <h4 className="font-semibold">Gratificação de Desempenho em Saúde</h4>
-                <p>
-                  <strong>Lei 15.984/2013, alterada por Lei 19.313/2025</strong><br />
-                  • 80% do vencimento (a partir de 1º maio 2025)<br />
-                  • 90% do vencimento (a partir de 1º dezembro 2025)
-                </p>
+              <div className="space-y-3">
+                <h4 className="font-semibold">1. Vencimento Básico (Lei 19.313/2025)</h4>
+                <p>Valor conforme tabela de vencimentos para o Nível e Referência (Letra)</p>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-semibold">Adicional Noturno</h4>
-                <p>
-                  <strong>25% sobre o valor da hora</strong> trabalhada entre 22h e 06h
-                </p>
+              <div className="space-y-3">
+                <h4 className="font-semibold">2. Gratificação de Desempenho (Lei 15.984/2013, alterada por Lei 19.313/2025)</h4>
+                <p>70% até 30/04/2025 | 80% de 01/05 a 30/11/2025 | 90% a partir de 01/12/2025</p>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-semibold">Adicional Trienal</h4>
-                <p>
-                  <strong>3% sobre o vencimento básico</strong> a cada 3 anos de serviço, até máximo de 36%
-                </p>
+              <div className="space-y-3">
+                <h4 className="font-semibold">3. Adicional de Pós-Graduação (Art. 14 - Não Cumulativo)</h4>
+                <p>Especialização: 13% | Mestrado: 16% | Doutorado: 19%</p>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-semibold">Auxílios</h4>
-                <p>
-                  • Auxílio Alimentação: valor fixo mensal<br />
-                  • Salário-Família: 5% do salário mínimo por dependente<br />
-                  • Auxílio Transporte: conforme legislação
-                </p>
+              <div className="space-y-3">
+                <h4 className="font-semibold">4. Adicional Trienal (Art. 15)</h4>
+                <p>3% a cada 3 anos de serviço, máximo 36% (12 triênios)</p>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-semibold">Licença-Prêmio</h4>
-                <p>
-                  <strong>A cada 5 anos:</strong> 3 meses de licença remunerada (não conversível em dinheiro)
-                </p>
+              <div className="space-y-3">
+                <h4 className="font-semibold">5. Adicional Noturno (Art. 11)</h4>
+                <p>25% sobre valor da hora trabalhada entre 22h-06h</p>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-semibold">Férias</h4>
-                <p>
-                  <strong>30 dias anuais</strong> + acréscimo de 1/3 do salário durante as férias
-                </p>
+              <div className="space-y-3">
+                <h4 className="font-semibold">6. Hora-Plantão (Art. 16)</h4>
+                <p>Valor por hora conforme portaria. Período aguardando chamada no local de trabalho</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold">7. Sobreaviso (Art. 17)</h4>
+                <p>100% se convocado | 50% se não convocado. Máximo 200 horas/mês</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold">8. Auxílio Alimentação (Art. 18)</h4>
+                <p>Valor fixo mensal (indenizatório)</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold">9. Salário-Família (Art. 19)</h4>
+                <p>5% do salário mínimo por dependente</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold">10. Férias (Art. 21)</h4>
+                <p>30 dias anuais + 1/3 do salário durante as férias</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold">11. Licença-Prêmio (Art. 20)</h4>
+                <p>A cada 5 anos: 3 meses remunerados (não conversível em dinheiro)</p>
               </div>
             </CardContent>
           </Card>
@@ -777,16 +820,16 @@ export function SalarySimulator() {
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <p>
-                <strong>Lei Complementar nº 323/2006:</strong> Estabelece a estrutura de carreira de enfermagem
+                <strong>Lei Complementar nº 323/2006:</strong> Estabelece a estrutura de carreira de enfermagem do Estado de Santa Catarina
               </p>
               <p>
-                <strong>Lei nº 19.313/2025:</strong> Atualiza a tabela de vencimentos (16 níveis)
+                <strong>Lei nº 19.313/2025:</strong> Atualiza a tabela de vencimentos (16 níveis) e altera a Gratificação de Desempenho
               </p>
               <p>
                 <strong>Lei nº 15.984/2013:</strong> Institui a Gratificação de Desempenho em Saúde
               </p>
               <p>
-                <strong>Lei nº 18.371/2022:</strong> Altera a gratificação para 70% (depois 80% e 90%)
+                <strong>Lei nº 18.371/2022:</strong> Altera a Gratificação de Desempenho para 70%
               </p>
             </CardContent>
           </Card>
