@@ -47,7 +47,7 @@ export function SalarySimulator() {
       hourlyRate: 50,
       convoked: true,
     },
-    insalubrity: 0,
+    insalubrity: "none",
     foodAllowance: 550,
     dependents: 0,
   });
@@ -98,10 +98,11 @@ export function SalarySimulator() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="simulator" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="simulator">Simulador</TabsTrigger>
           <TabsTrigger value="carreira">Carreira</TabsTrigger>
           <TabsTrigger value="history">Histórico ({history.length})</TabsTrigger>
+          <TabsTrigger value="info">Informações</TabsTrigger>
         </TabsList>
 
         <TabsContent value="simulator" className="space-y-6">
@@ -327,22 +328,30 @@ export function SalarySimulator() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">5. Insalubridade</CardTitle>
-              <CardDescription>Lei Complementar 323/2006, Art. 12</CardDescription>
+              <CardDescription>Lei Complementar 323/2006, Art. 12 - Valor fixo sobre Nível 9, Letra A</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="insalubrity">Valor da Insalubridade (R$)</Label>
-                <Input
-                  id="insalubrity"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                <Label htmlFor="insalubrity">Tipo de Insalubridade</Label>
+                <Select
                   value={input.insalubrity}
-                  onChange={(e) => setInput({ ...input, insalubrity: parseFloat(e.target.value) || 0 })}
-                  placeholder="Digite o valor em reais"
-                />
+                  onValueChange={(value) => setInput({ ...input, insalubrity: value })}
+                >
+                  <SelectTrigger id="insalubrity">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sem Insalubridade</SelectItem>
+                    <SelectItem value="general_minimum">Geral - Mínimo (12%)</SelectItem>
+                    <SelectItem value="general_medium">Geral - Médio (17%)</SelectItem>
+                    <SelectItem value="general_maximum">Geral - Máximo (23%)</SelectItem>
+                    <SelectItem value="specific_minimum">Específicos - Mínimo (17%)</SelectItem>
+                    <SelectItem value="specific_medium">Específicos - Médio (26%)</SelectItem>
+                    <SelectItem value="specific_maximum">Específicos - Máximo (34%)</SelectItem>
+                  </SelectContent>
+                </Select>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
-                  Valor conforme setor (Psiquiatria, Infectologia, etc.)
+                  Setores Específicos: Psiquiatria, Infectologia, etc.
                 </p>
               </div>
 
@@ -776,7 +785,122 @@ export function SalarySimulator() {
           )}
         </TabsContent>
 
+        {/* Informações */}
+        <TabsContent value="info" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Variáveis do Simulador</CardTitle>
+              <CardDescription>Lei Complementar 323/2006 e Lei 19.313/2025</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Seção 1: Identificação */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-blue-600 dark:text-blue-400">1. Identificação do Cargo (Lei 19.313/2025)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Nível:</strong> 13-16 para Enfermeiros</p>
+                  <p><strong>Referência (Letra):</strong> A-J (Progressão Horizontal a cada 2 anos)</p>
+                </div>
+              </div>
 
+              {/* Seção 2: Tempo de Serviço */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-blue-600 dark:text-blue-400">2. Tempo de Serviço (Art. 33)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Tempo Anterior:</strong> Serviço em outro órgão público (conta para progressão)</p>
+                  <p><strong>Tempo na Posição Atual:</strong> Tempo no cargo atual</p>
+                </div>
+              </div>
+
+              {/* Seção 3: Gratificação de Desempenho */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-green-600 dark:text-green-400">3. Gratificação de Desempenho (Lei 19.313/2025)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Até 30/04/2025:</strong> 70% do vencimento básico</p>
+                  <p><strong>01/05 a 30/11/2025:</strong> 80% (50% em maio, 50% em junho)</p>
+                  <p><strong>A partir 01/12/2025:</strong> 90% (50% em dezembro, 50% em janeiro)</p>
+                </div>
+              </div>
+
+              {/* Seção 4: Pós-Graduação */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-green-600 dark:text-green-400">4. Adicional de Pós-Graduação (Art. 14 - NÃO Cumulativo)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Especialização:</strong> 13% do vencimento básico</p>
+                  <p><strong>Mestrado:</strong> 16% do vencimento básico</p>
+                  <p><strong>Doutorado:</strong> 19% do vencimento básico</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Apenas um tipo por vez</p>
+                </div>
+              </div>
+
+              {/* Seção 5: Adicional Trienal */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-green-600 dark:text-green-400">5. Adicional Trienal (Art. 15)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Cálculo:</strong> 3% a cada 3 anos de serviço</p>
+                  <p><strong>Máximo:</strong> 36% (12 triênios)</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Inclui tempo anterior (Art. 33)</p>
+                </div>
+              </div>
+
+              {/* Seção 6: Insalubridade */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-orange-600 dark:text-orange-400">6. Insalubridade (Art. 12)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Base:</strong> Valor fixo sobre Nível 9, Letra A</p>
+                  <p><strong>Setores Gerais:</strong> 12%, 17%, 23%</p>
+                  <p><strong>Setores Específicos:</strong> 17%, 26%, 34% (Psiquiatria, Infectologia)</p>
+                </div>
+              </div>
+
+              {/* Seção 7: Adicional Noturno */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-orange-600 dark:text-orange-400">7. Adicional Noturno (Art. 11)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Percentual:</strong> 25% sobre valor da hora</p>
+                  <p><strong>Horário:</strong> 22h às 06h</p>
+                </div>
+              </div>
+
+              {/* Seção 8: Hora-Plantão */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-orange-600 dark:text-orange-400">8. Hora-Plantão (Art. 16)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Definição:</strong> Período aguardando chamada no local de trabalho</p>
+                  <p><strong>Valor:</strong> Customizável por hora</p>
+                </div>
+              </div>
+
+              {/* Seção 9: Sobreaviso */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-orange-600 dark:text-orange-400">9. Sobreaviso (Art. 17)</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Se convocado:</strong> 100% do valor da hora</p>
+                  <p><strong>Se não convocado:</strong> 50% do valor da hora</p>
+                  <p><strong>Máximo:</strong> 200 horas/mês</p>
+                </div>
+              </div>
+
+              {/* Seção 10: Auxílios */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-purple-600 dark:text-purple-400">10. Auxílios</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Auxílio Alimentação (Art. 18):</strong> Valor fixo mensal (indenizatório)</p>
+                  <p><strong>Salário-Família (Art. 19):</strong> 5% do salário mínimo por dependente</p>
+                </div>
+              </div>
+
+              {/* Seção 11: Férias e Licença */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-purple-600 dark:text-purple-400">11. Férias e Licença-Prêmio</h4>
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <p><strong>Férias (Art. 21):</strong> 30 dias + 1/3 do salário</p>
+                  <p><strong>Licença-Prêmio (Art. 20):</strong> A cada 5 anos = 3 meses remunerados</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Licença-Prêmio NÃO conta para progressão</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );

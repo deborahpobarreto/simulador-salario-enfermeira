@@ -133,6 +133,34 @@ export const POST_GRADUATION_PERCENTAGES: Record<string, number> = {
 };
 
 /**
+ * Lei Complementar 323/2006 - Art. 12
+ * Adicional de Insalubridade
+ * Valor fixo calculado sobre Nivel 9, Referencia A
+ */
+export const INSALUBRITY_PERCENTAGES = {
+  general: {
+    minimum: 0.12,
+    medium: 0.17,
+    maximum: 0.23,
+  },
+  specific: {
+    minimum: 0.17,
+    medium: 0.26,
+    maximum: 0.34,
+  },
+};
+
+export const INSALUBRITY_TYPES: Record<string, string> = {
+  "none": "Sem Insalubridade",
+  "general_minimum": "Geral - Minimo (12%)",
+  "general_medium": "Geral - Medio (17%)",
+  "general_maximum": "Geral - Maximo (23%)",
+  "specific_minimum": "Especificos - Minimo (17%)",
+  "specific_medium": "Especificos - Medio (26%)",
+  "specific_maximum": "Especificos - Maximo (34%)",
+};
+
+/**
  * Lei Complementar 323/2006 - Art. 11º
  * Adicional Noturno
  * 25% sobre o valor da hora trabalhada entre 22h e 06h

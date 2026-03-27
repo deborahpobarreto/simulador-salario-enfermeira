@@ -52,7 +52,7 @@ export interface SalaryCalculatorInput {
   };
 
   // Insalubridade (Art. 12)
-  insalubrity: number; // Valor em R$ (customizável)
+  insalubrity: string; // Tipo de insalubridade: none, general_minimum, general_medium, general_maximum, specific_minimum, specific_medium, specific_maximum
 
   // Auxílios
   foodAllowance: number; // Art. 18
@@ -130,7 +130,23 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const sobreavisoTotal = input.sobreaviso.hours * input.sobreaviso.hourlyRate * sobreavisoPercentage;
 
     // 8. Insalubridade (Art. 12)
-    const insalubrity = input.insalubrity;
+    // Calculado sobre Nivel 9, Referencia A
+    const level9BaseValue = SALARY_TABLE["9"]?.["A"] || 1800.00;
+    let insalubrity = 0;
+    
+    if (input.insalubrity === "general_minimum") {
+      insalubrity = level9BaseValue * 0.12;
+    } else if (input.insalubrity === "general_medium") {
+      insalubrity = level9BaseValue * 0.17;
+    } else if (input.insalubrity === "general_maximum") {
+      insalubrity = level9BaseValue * 0.23;
+    } else if (input.insalubrity === "specific_minimum") {
+      insalubrity = level9BaseValue * 0.17;
+    } else if (input.insalubrity === "specific_medium") {
+      insalubrity = level9BaseValue * 0.26;
+    } else if (input.insalubrity === "specific_maximum") {
+      insalubrity = level9BaseValue * 0.34;
+    }
 
     // 9. Auxílio Alimentação (Art. 18)
     const foodAllowance = input.foodAllowance;
