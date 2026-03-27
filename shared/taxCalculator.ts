@@ -1,6 +1,8 @@
 /**
  * Cálculo de Impostos - INSS e IRRF
- * Baseado nas alíquotas 2025 (maio em diante)
+ * Baseado nas alíquotas 2026 (janeiro em diante)
+ * Lei nº 15.191, de 11 de agosto de 2025
+ * Lei nº 15.270, de 26 de novembro de 2025 (Tabela de Redução)
  */
 
 /**
@@ -22,9 +24,10 @@ export function calculateINSS(grossSalary: number): number {
 
 /**
  * Cálculo de IRRF (Imposto de Renda Retido na Fonte)
- * Lei nº 15.191, de 11 de agosto de 2025 (a partir de maio de 2025)
+ * Lei nº 15.191, de 11 de agosto de 2025
+ * Tabela de Incidência Mensal a partir de janeiro de 2026
  * 
- * Alíquotas progressivas 2025 (maio em diante)
+ * Alíquotas progressivas 2026 (janeiro em diante)
  * 
  * Faixas de renda (após deduções):
  * - Até R$ 2.428,80: isento
@@ -47,23 +50,44 @@ export function calculateIRRF(grossSalary: number, dependents: number = 0): numb
   const deductionBase = inss + (dependents * IRRF_DEPENDENT_DEDUCTION);
   const taxableIncome = Math.max(0, grossSalary - deductionBase);
 
-  // Alíquotas progressivas (maio 2025 em diante)
+  // Alíquotas progressivas (janeiro 2026 em diante)
+  let irrf = 0;
+  
   if (taxableIncome <= 2428.80) {
-    return 0;
+    irrf = 0;
   } else if (taxableIncome <= 2826.65) {
-    return (taxableIncome - 2428.80) * 0.075;
+    irrf = (taxableIncome - 2428.80) * 0.075;
   } else if (taxableIncome <= 3751.05) {
-    return (2826.65 - 2428.80) * 0.075 + (taxableIncome - 2826.65) * 0.15;
+    irrf = (2826.65 - 2428.80) * 0.075 + (taxableIncome - 2826.65) * 0.15;
   } else if (taxableIncome <= 4664.68) {
-    return (2826.65 - 2428.80) * 0.075 +
+    irrf = (2826.65 - 2428.80) * 0.075 +
            (3751.05 - 2826.65) * 0.15 +
            (taxableIncome - 3751.05) * 0.225;
   } else {
-    return (2826.65 - 2428.80) * 0.075 +
+    irrf = (2826.65 - 2428.80) * 0.075 +
            (3751.05 - 2826.65) * 0.15 +
            (4664.68 - 3751.05) * 0.225 +
            (taxableIncome - 4664.68) * 0.275;
   }
+
+  // Aplicar Tabela de Redução (Lei nº 15.270/2025)
+  // Para rendimentos tributáveis até R$ 7.350,00
+  if (taxableIncome <= 7350.00) {
+    let reduction = 0;
+    
+    if (taxableIncome <= 5000.00) {
+      // Redução até R$ 312,89 de modo que o imposto seja zero
+      reduction = Math.min(irrf, 312.89);
+    } else if (taxableIncome <= 7350.00) {
+      // Redução decrescente: R$ 978,62 - (0,133145 x rendimentos tributáveis)
+      reduction = 978.62 - (0.133145 * taxableIncome);
+      reduction = Math.max(0, Math.min(reduction, irrf));
+    }
+    
+    irrf = Math.max(0, irrf - reduction);
+  }
+
+  return irrf;
 }
 
 /**
