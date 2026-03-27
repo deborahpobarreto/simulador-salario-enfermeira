@@ -15,6 +15,8 @@ import {
   SALARY_FAMILY_PERCENTAGE,
   MINIMUM_WAGE_2025,
   VACATION_THIRDS_PERCENTAGE,
+  FUNCTION_GRATIFICATIONS,
+  INSALUBRITY_PERCENTAGES,
 } from "@/../../shared/salaryData";
 import { calculateINSS, calculateIRRF } from "@/../../shared/taxCalculator";
 import { useMemo } from "react";
@@ -55,6 +57,9 @@ export interface SalaryCalculatorInput {
   // Insalubridade (Art. 12)
   insalubrity: string; // Tipo de insalubridade: none, general_minimum, general_medium, general_maximum, specific_minimum, specific_medium, specific_maximum
 
+  // Gratificação de Função (ANEXO IV)
+  functionGratification: string; // GF-1 a GF-9 ou "none"
+
   // Auxílios
   foodAllowance: number; // Art. 18
   dependents: number; // Para Salário-Família (Art. 19)
@@ -73,6 +78,7 @@ export interface SalaryCalculatorOutput {
   nighttimeAdditional: number;
   plantaoTotal: number;
   sobreavisoTotal: number;
+  functionGratification: number;
   foodAllowance: number;
   salaryFamily: number;
 
@@ -143,7 +149,7 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     let insalubrity = 0;
     
     if (input.insalubrity === "general_minimum") {
-      insalubrity = level9BaseValue * 0.12;
+      insalubrity = level9BaseValue * 0.13;
     } else if (input.insalubrity === "general_medium") {
       insalubrity = level9BaseValue * 0.17;
     } else if (input.insalubrity === "general_maximum") {
@@ -156,10 +162,17 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       insalubrity = level9BaseValue * 0.34;
     }
 
-    // 9. Auxílio Alimentação (Art. 18)
+    // 9. Gratificação de Função (ANEXO IV)
+    let functionGratification = 0;
+    if (input.functionGratification !== "none") {
+      const gf = FUNCTION_GRATIFICATIONS[input.functionGratification as keyof typeof FUNCTION_GRATIFICATIONS];
+      functionGratification = gf ? gf.value : 0;
+    }
+
+    // 11. Auxílio Alimentação (Art. 18)
     const foodAllowance = input.foodAllowance;
 
-    // 10. Salário-Família (Art. 19)
+    // 12. Salário-Família (Art. 19)
     // 5% do salário mínimo por dependente
     const salaryFamily = input.dependents * (MINIMUM_WAGE_2025 * SALARY_FAMILY_PERCENTAGE);
 
@@ -173,6 +186,7 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       nighttimeAdditional +
       plantaoTotal +
       sobreavisoTotal +
+      functionGratification +
       foodAllowance +
       salaryFamily;
 
@@ -197,6 +211,7 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       nighttimeAdditional,
       plantaoTotal,
       sobreavisoTotal,
+      functionGratification,
       foodAllowance,
       salaryFamily,
       monthlyGrossSalary,

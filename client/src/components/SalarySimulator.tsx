@@ -47,6 +47,7 @@ export function SalarySimulator() {
       convoked: true,
     },
     insalubrity: "none",
+    functionGratification: "none",
     foodAllowance: 550,
     dependents: 0,
   });
