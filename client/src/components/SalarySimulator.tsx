@@ -47,6 +47,7 @@ export function SalarySimulator() {
       hourlyRate: 50,
       convoked: true,
     },
+    insalubrity: 0,
     foodAllowance: 550,
     dependents: 0,
   });
@@ -322,10 +323,44 @@ export function SalarySimulator() {
             </CardContent>
           </Card>
 
-          {/* Seção 5: Adicional Noturno */}
+          {/* Seção 5: Insalubridade */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">5. Adicional Noturno</CardTitle>
+              <CardTitle className="text-lg">5. Insalubridade</CardTitle>
+              <CardDescription>Lei Complementar 323/2006, Art. 12</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="insalubrity">Valor da Insalubridade (R$)</Label>
+                <Input
+                  id="insalubrity"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={input.insalubrity}
+                  onChange={(e) => setInput({ ...input, insalubrity: parseFloat(e.target.value) || 0 })}
+                  placeholder="Digite o valor em reais"
+                />
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  Valor conforme setor (Psiquiatria, Infectologia, etc.)
+                </p>
+              </div>
+
+              {salary.insalubrity > 0 && (
+                <div className="bg-orange-50 dark:bg-orange-950 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Insalubridade</p>
+                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                    R$ {salary.insalubrity.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Seção 6: Adicional Noturno */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">6. Adicional Noturno</CardTitle>
               <CardDescription>Lei Complementar 323/2006, Art. 11 - 25% sobre horas 22h-06h</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

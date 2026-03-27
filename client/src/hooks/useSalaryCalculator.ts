@@ -51,6 +51,9 @@ export interface SalaryCalculatorInput {
     convoked: boolean; // true = 100%, false = 50%
   };
 
+  // Insalubridade (Art. 12)
+  insalubrity: number; // Valor em R$ (customizável)
+
   // Auxílios
   foodAllowance: number; // Art. 18
   dependents: number; // Para Salário-Família (Art. 19)
@@ -65,6 +68,7 @@ export interface SalaryCalculatorOutput {
   performanceBonus: number;
   postGraduationBonus: number;
   triennialBonus: number;
+  insalubrity: number;
   nighttimeAdditional: number;
   plantaoTotal: number;
   sobreavisoTotal: number;
@@ -125,10 +129,13 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const sobreavisoPercentage = input.sobreaviso.convoked ? 1.0 : 0.5;
     const sobreavisoTotal = input.sobreaviso.hours * input.sobreaviso.hourlyRate * sobreavisoPercentage;
 
-    // 8. Auxílio Alimentação (Art. 18)
+    // 8. Insalubridade (Art. 12)
+    const insalubrity = input.insalubrity;
+
+    // 9. Auxílio Alimentação (Art. 18)
     const foodAllowance = input.foodAllowance;
 
-    // 9. Salário-Família (Art. 19)
+    // 10. Salário-Família (Art. 19)
     // 5% do salário mínimo por dependente
     const salaryFamily = input.dependents * (MINIMUM_WAGE_2025 * SALARY_FAMILY_PERCENTAGE);
 
@@ -138,6 +145,7 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       performanceBonus +
       postGraduationBonus +
       triennialBonus +
+      insalubrity +
       nighttimeAdditional +
       plantaoTotal +
       sobreavisoTotal +
@@ -154,6 +162,7 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       performanceBonus,
       postGraduationBonus,
       triennialBonus,
+      insalubrity,
       nighttimeAdditional,
       plantaoTotal,
       sobreavisoTotal,
