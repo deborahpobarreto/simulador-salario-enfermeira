@@ -16,6 +16,7 @@ import {
   MINIMUM_WAGE_2025,
   VACATION_THIRDS_PERCENTAGE,
 } from "@/../../shared/salaryData";
+import { calculateINSS, calculateIRRF } from "@/../../shared/taxCalculator";
 import { useMemo } from "react";
 
 /**
@@ -79,6 +80,13 @@ export interface SalaryCalculatorOutput {
   monthlyGrossSalary: number;
   annualGrossSalary: number;
   vacationWithThirds: number;
+
+  // Descontos e Salário Líquido
+  inss: number;
+  irrf: number;
+  totalDeductions: number;
+  netSalary: number;
+  effectiveTaxRate: number;
 
   // Detalhes
   details: {
@@ -173,6 +181,13 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     // Férias com 1/3 (Art. 21)
     const vacationWithThirds = monthlyGrossSalary * VACATION_THIRDS_PERCENTAGE;
 
+    // Cálculo de Impostos
+    const inss = calculateINSS(monthlyGrossSalary);
+    const irrf = calculateIRRF(monthlyGrossSalary, input.dependents);
+    const totalDeductions = inss + irrf;
+    const netSalary = monthlyGrossSalary - totalDeductions;
+    const effectiveTaxRate = (totalDeductions / monthlyGrossSalary) * 100;
+
     return {
       basicSalary,
       performanceBonus,
@@ -187,6 +202,11 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       monthlyGrossSalary,
       annualGrossSalary,
       vacationWithThirds,
+      inss,
+      irrf,
+      totalDeductions,
+      netSalary,
+      effectiveTaxRate,
       details: {
         performanceBonusPercentage,
         postGraduationPercentage,

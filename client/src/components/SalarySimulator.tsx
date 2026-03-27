@@ -621,6 +621,44 @@ export function SalarySimulator() {
                   </p>
                 </div>
 
+                {/* Seção de Descontos e Salário Líquido */}
+                <div className="border-t-2 border-gray-200 dark:border-gray-800 pt-6 mt-6">
+                  <h3 className="text-lg font-semibold mb-4">Descontos e Salário Líquido</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="bg-red-50 dark:bg-red-950 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">INSS (11%)</p>
+                      <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                        R$ {salary.inss.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                    <div className="bg-red-50 dark:bg-red-950 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">IRRF (Progressivo)</p>
+                      <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                        R$ {salary.irrf.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                    <div className="flex justify-between mb-2">
+                      <span className="font-semibold">Total de Descontos:</span>
+                      <span className="font-bold">R$ {salary.totalDeductions.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                      <span>Alíquota Efetiva:</span>
+                      <span>{salary.effectiveTaxRate.toFixed(2)}%</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Salário Líquido (Mensal)</p>
+                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                      R$ {salary.netSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </p>
+                  </div>
+                </div>
+
                 <Button onClick={handleAddSimulation} className="w-full gap-2" size="lg">
                   <Plus className="w-4 h-4" />
                   Adicionar ao Histórico
