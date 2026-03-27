@@ -119,3 +119,8 @@ export const INSALUBRITY_LEVELS = {
   medium: "Média",
   maximum: "Máxima",
 } as const;
+
+// Constantes para adicionais
+export const PERFORMANCE_BONUS_PERCENTAGE = 0.7; // 70% do vencimento
+export const DEFAULT_FOOD_ALLOWANCE = 550; // Auxílio alimentação padrão
+export const DEFAULT_INSALUBRITY_SES = 300.97; // Valor de referência setembro/2024
