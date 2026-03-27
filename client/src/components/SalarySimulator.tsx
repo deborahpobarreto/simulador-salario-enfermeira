@@ -17,7 +17,6 @@ import {
   SALARY_TABLE,
   PERFORMANCE_PERIODS,
   calculateInitialLetter,
-  projectCareer,
 } from "@/../../shared/salaryData";
 import { useSalaryCalculator, type SalaryCalculatorInput } from "@/hooks/useSalaryCalculator";
 import { Trash2, Plus } from "lucide-react";
@@ -69,10 +68,35 @@ export function SalarySimulator() {
   };
 
   // Projeção de carreira
-  const careerProjection = useMemo(
-    () => projectCareer(input.level, input.letter, yearsOfPreviousService, 10),
-    [input.level, input.letter, yearsOfPreviousService]
-  );
+  const careerProjection = useMemo(() => {
+    const projection: any[] = [];
+    let currentLevel = input.level;
+    let currentLetter = input.letter;
+    let totalYears = yearsOfPreviousService;
+
+    for (let year = 0; year <= 10; year++) {
+      projection.push({
+        year,
+        level: currentLevel,
+        letter: currentLetter,
+        description: year === 0 ? "Inicio" : "",
+      });
+
+      if (year < 10) {
+        totalYears += 1;
+        if (totalYears > 0 && totalYears % 2 === 0) {
+          const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+          const currentIndex = letters.indexOf(currentLetter);
+          if (currentIndex < 9) {
+            currentLetter = letters[currentIndex + 1];
+            projection[projection.length - 1].description = "Progressao Horizontal";
+          }
+        }
+      }
+    }
+
+    return projection;
+  }, [input.level, input.letter, yearsOfPreviousService]);
 
   const handleAddSimulation = () => {
     const newSimulation: SimulationHistory = {
@@ -712,7 +736,7 @@ export function SalarySimulator() {
                     </tr>
                   </thead>
                   <tbody>
-                    {careerProjection.map((proj, idx) => {
+                    {careerProjection.map((proj: any, idx: number) => {
                       const projSalary = SALARY_TABLE[proj.level.toString()]?.[proj.letter] || 0;
                       const isProgression = idx > 0 && proj.description.includes("Progressão");
 

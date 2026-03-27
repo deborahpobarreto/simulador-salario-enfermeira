@@ -14,6 +14,18 @@
  * Para Enfermeiros: Níveis 13-16 (conforme Lei 19.313/2025)
  */
 export const SALARY_LEVELS: Record<string, string> = {
+  "1": "Nível 1",
+  "2": "Nível 2",
+  "3": "Nível 3",
+  "4": "Nível 4",
+  "5": "Nível 5",
+  "6": "Nível 6",
+  "7": "Nível 7",
+  "8": "Nível 8",
+  "9": "Nível 9",
+  "10": "Nível 10",
+  "11": "Nível 11",
+  "12": "Nível 12",
   "13": "Nível 13 - Enfermeiro",
   "14": "Nível 14 - Enfermeiro",
   "15": "Nível 15 - Enfermeiro",
@@ -38,58 +50,202 @@ export const SALARY_LETTERS: Record<string, string> = {
 };
 
 /**
- * Lei 19.313/2025 - Tabela de Vencimentos Básicos
+ * Lei 19.313/2025 - Tabela de Vencimentos Básicos (ANEXO III)
  * Valores em R$ (conforme Lei 19.313/2025)
  * Estrutura: [Nível][Letra] = Vencimento Básico
  */
 export const SALARY_TABLE: Record<string, Record<string, number>> = {
+  "1": {
+    "A": 1495.07,
+    "B": 1514.50,
+    "C": 1534.17,
+    "D": 1554.13,
+    "E": 1574.34,
+    "F": 1594.78,
+    "G": 1615.54,
+    "H": 1636.52,
+    "I": 1657.80,
+    "J": 1679.36,
+  },
+  "2": {
+    "A": 1701.18,
+    "B": 1723.29,
+    "C": 1745.72,
+    "D": 1768.37,
+    "E": 1791.38,
+    "F": 1814.68,
+    "G": 1838.26,
+    "H": 1862.16,
+    "I": 1886.37,
+    "J": 1910.90,
+  },
+  "3": {
+    "A": 1935.74,
+    "B": 1960.89,
+    "C": 1986.38,
+    "D": 2012.20,
+    "E": 2038.36,
+    "F": 2064.87,
+    "G": 2091.71,
+    "H": 2118.92,
+    "I": 2146.46,
+    "J": 2174.35,
+  },
+  "4": {
+    "A": 2202.62,
+    "B": 2231.24,
+    "C": 2260.25,
+    "D": 2289.64,
+    "E": 2319.43,
+    "F": 2349.55,
+    "G": 2380.11,
+    "H": 2411.04,
+    "I": 2442.40,
+    "J": 2474.15,
+  },
+  "5": {
+    "A": 1613.09,
+    "B": 1634.07,
+    "C": 1655.31,
+    "D": 1676.81,
+    "E": 1698.62,
+    "F": 1720.68,
+    "G": 1743.07,
+    "H": 1765.72,
+    "I": 1788.69,
+    "J": 1811.93,
+  },
+  "6": {
+    "A": 1835.50,
+    "B": 1859.33,
+    "C": 1883.51,
+    "D": 1908.00,
+    "E": 1932.81,
+    "F": 1957.95,
+    "G": 1983.38,
+    "H": 2009.18,
+    "I": 2035.29,
+    "J": 2061.76,
+  },
+  "7": {
+    "A": 2088.56,
+    "B": 2115.70,
+    "C": 2143.19,
+    "D": 2171.07,
+    "E": 2199.29,
+    "F": 2227.87,
+    "G": 2256.84,
+    "H": 2286.20,
+    "I": 2315.90,
+    "J": 2346.02,
+  },
+  "8": {
+    "A": 2376.50,
+    "B": 2407.42,
+    "C": 2438.71,
+    "D": 2470.41,
+    "E": 2502.51,
+    "F": 2535.06,
+    "G": 2568.01,
+    "H": 2601.39,
+    "I": 2635.20,
+    "J": 2669.47,
+  },
+  "9": {
+    "A": 1770.44,
+    "B": 1797.00,
+    "C": 1823.95,
+    "D": 1851.31,
+    "E": 1879.10,
+    "F": 1907.29,
+    "G": 1935.90,
+    "H": 1964.93,
+    "I": 1994.40,
+    "J": 2024.32,
+  },
+  "10": {
+    "A": 2054.70,
+    "B": 2085.49,
+    "C": 2116.82,
+    "D": 2148.55,
+    "E": 2180.79,
+    "F": 2213.48,
+    "G": 2246.68,
+    "H": 2280.40,
+    "I": 2314.59,
+    "J": 2349.33,
+  },
+  "11": {
+    "A": 2384.54,
+    "B": 2420.31,
+    "C": 2456.62,
+    "D": 2493.47,
+    "E": 2530.88,
+    "F": 2568.84,
+    "G": 2607.35,
+    "H": 2646.48,
+    "I": 2686.16,
+    "J": 2726.46,
+  },
+  "12": {
+    "A": 2767.35,
+    "B": 2808.87,
+    "C": 2851.01,
+    "D": 2893.76,
+    "E": 2937.17,
+    "F": 2981.24,
+    "G": 3025.96,
+    "H": 3071.35,
+    "I": 3117.41,
+    "J": 3164.17,
+  },
   "13": {
     "A": 2360.61,
-    "B": 2472.64,
-    "C": 2595.27,
-    "D": 2727.03,
-    "E": 2868.38,
-    "F": 3019.79,
-    "G": 3181.78,
-    "H": 3355.87,
-    "I": 3542.66,
-    "J": 3742.80,
+    "B": 2407.83,
+    "C": 2455.99,
+    "D": 2505.11,
+    "E": 2555.21,
+    "F": 2606.31,
+    "G": 2658.43,
+    "H": 2711.59,
+    "I": 2765.84,
+    "J": 2821.16,
   },
   "14": {
-    "A": 2580.67,
-    "B": 2709.71,
-    "C": 2848.19,
-    "D": 2996.61,
-    "E": 3155.44,
-    "F": 3325.21,
-    "G": 3506.47,
-    "H": 3699.79,
-    "I": 3905.78,
-    "J": 4125.07,
+    "A": 2877.57,
+    "B": 2935.13,
+    "C": 2993.83,
+    "D": 3053.70,
+    "E": 3114.76,
+    "F": 3177.06,
+    "G": 3240.61,
+    "H": 3305.44,
+    "I": 3371.56,
+    "J": 3438.96,
   },
   "15": {
-    "A": 2800.74,
-    "B": 2940.78,
-    "C": 3091.11,
-    "D": 3252.19,
-    "E": 3424.50,
-    "F": 3608.63,
-    "G": 3805.16,
-    "H": 4014.71,
-    "I": 4237.90,
-    "J": 4475.34,
+    "A": 3507.74,
+    "B": 3577.91,
+    "C": 3649.46,
+    "D": 3722.46,
+    "E": 3796.88,
+    "F": 3872.85,
+    "G": 3950.29,
+    "H": 4029.28,
+    "I": 4109.88,
+    "J": 4192.08,
   },
   "16": {
-    "A": 3020.80,
-    "B": 3171.84,
-    "C": 3334.03,
-    "D": 3508.77,
-    "E": 3696.56,
-    "F": 3898.05,
-    "G": 4113.85,
-    "H": 4344.63,
-    "I": 4591.02,
-    "J": 4853.61,
+    "A": 4275.92,
+    "B": 4361.45,
+    "C": 4448.67,
+    "D": 4537.63,
+    "E": 4628.40,
+    "F": 4720.96,
+    "G": 4815.37,
+    "H": 4911.68,
+    "I": 5009.93,
+    "J": 5110.09,
   },
 };
 
@@ -136,10 +292,20 @@ export const POST_GRADUATION_PERCENTAGES: Record<string, number> = {
  * Lei Complementar 323/2006 - Art. 12
  * Adicional de Insalubridade
  * Valor fixo calculado sobre Nivel 9, Referencia A
+ * 
+ * Setores Gerais:
+ * - Minimo: 13% (conforme edital)
+ * - Medio: 17%
+ * - Maximo: 23%
+ * 
+ * Setores Especificos (Psiquiatria, Infectologia):
+ * - Minimo: 17%
+ * - Medio: 26%
+ * - Maximo: 34%
  */
 export const INSALUBRITY_PERCENTAGES = {
   general: {
-    minimum: 0.12,
+    minimum: 0.13,
     medium: 0.17,
     maximum: 0.23,
   },
@@ -152,7 +318,7 @@ export const INSALUBRITY_PERCENTAGES = {
 
 export const INSALUBRITY_TYPES: Record<string, string> = {
   "none": "Sem Insalubridade",
-  "general_minimum": "Geral - Minimo (12%)",
+  "general_minimum": "Geral - Minimo (13%)",
   "general_medium": "Geral - Medio (17%)",
   "general_maximum": "Geral - Maximo (23%)",
   "specific_minimum": "Especificos - Minimo (17%)",
@@ -226,95 +392,33 @@ export const VERTICAL_PROGRESSION_HOURS = 120;
 
 /**
  * Lei Complementar 323/2006 - Art. 33º
- * Aproveitamento de Tempo de Serviço Anterior
- * 
- * Tempo anterior conta para:
- * - Progressão horizontal (letra)
- * - Progressão vertical (nível)
- * - Licença-prêmio
- * - Aposentadoria
- * - Outros direitos previstos em lei
- * 
- * MAS: Tempo em Licença-Prêmio gozada NÃO conta para progressão
+ * Aproveitamento de Tempo Anterior
+ * Tempo em outro órgão público conta para progressão
  */
-export const LETTERS_ARRAY = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const;
+export const PREVIOUS_SERVICE_COUNTS_FOR_PROGRESSION = true;
 
 /**
- * Calcula letra inicial baseada em tempo de serviço anterior
- * Lei Complementar 323/2006, Art. 33 + Art. 8º
- * 
- * A cada 2 anos de serviço anterior, sobe uma letra
- * 
- * @param yearsOfPreviousService Anos de serviço anterior
- * @returns Letra inicial (A-J)
+ * Lei Complementar 323/2006 - ANEXO IV
+ * Gratificação de Função (GF)
+ */
+export const FUNCTION_GRATIFICATIONS: Record<string, { name: string; value: number }> = {
+  "GF-1": { name: "Gestor I", value: 2332.80 },
+  "GF-2": { name: "Gestor II", value: 1814.40 },
+  "GF-3": { name: "Gestor III", value: 1555.20 },
+  "GF-4": { name: "Apoio Gerencial I", value: 1244.10 },
+  "GF-5": { name: "Apoio Gerencial II", value: 995.30 },
+  "GF-6": { name: "Apoio Gerencial III", value: 796.20 },
+  "GF-7": { name: "Apoio Gerencial IV", value: 347.40 },
+  "GF-8": { name: "Chefe de Setor", value: 260.60 },
+  "GF-9": { name: "Chefe de Seção", value: 217.10 },
+};
+
+/**
+ * Função auxiliar para calcular letra inicial baseada em tempo anterior
+ * Lei Complementar 323/2006 - Art. 33
  */
 export function calculateInitialLetter(yearsOfPreviousService: number): string {
-  const lettersToAdvance = Math.floor(yearsOfPreviousService / HORIZONTAL_PROGRESSION_YEARS);
-  const initialLetterIndex = Math.min(lettersToAdvance, LETTERS_ARRAY.length - 1);
-  return LETTERS_ARRAY[initialLetterIndex];
-}
-
-/**
- * Interface para projeção de carreira
- */
-export interface CareerProjection {
-  year: number;
-  level: number;
-  letter: string;
-  yearsInPosition: number;
-  totalYearsOfService: number;
-  description: string;
-}
-
-/**
- * Projeta carreira ao longo dos anos
- * Lei Complementar 323/2006, Art. 8º (Progressão Horizontal)
- * 
- * Progressão Horizontal: A cada 2 anos sobe uma letra (automática)
- * 
- * @param startingLevel Nível inicial (13-16)
- * @param startingLetter Letra inicial (A-J)
- * @param yearsOfPreviousService Anos de serviço anterior
- * @param yearsToProject Quantos anos projetar (máximo 10)
- * @returns Array com projeção de carreira
- */
-export function projectCareer(
-  startingLevel: number,
-  startingLetter: string,
-  yearsOfPreviousService: number,
-  yearsToProject: number
-): CareerProjection[] {
-  const projections: CareerProjection[] = [];
-  let currentLetterIndex = LETTERS_ARRAY.indexOf(startingLetter as any);
-
-  for (let year = 0; year <= yearsToProject; year++) {
-    const yearsInPosition = year;
-    const totalYearsOfService = yearsOfPreviousService + year;
-
-    // Progressão Horizontal: A cada 2 anos sobe uma letra
-    currentLetterIndex = Math.min(
-      LETTERS_ARRAY.indexOf(startingLetter as any) + Math.floor(yearsInPosition / HORIZONTAL_PROGRESSION_YEARS),
-      LETTERS_ARRAY.length - 1
-    );
-
-    const currentLetter = LETTERS_ARRAY[currentLetterIndex];
-
-    let description = `Ano ${year}`;
-    if (year === 0) {
-      description = "Entrada (com tempo anterior aproveitado)";
-    } else if (year > 0 && yearsInPosition % HORIZONTAL_PROGRESSION_YEARS === 0) {
-      description = `Progressão Horizontal: Letra ${currentLetter}`;
-    }
-
-    projections.push({
-      year,
-      level: startingLevel,
-      letter: currentLetter,
-      yearsInPosition,
-      totalYearsOfService,
-      description,
-    });
-  }
-
-  return projections;
+  const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+  const letterIndex = Math.floor(yearsOfPreviousService / 2);
+  return letters[Math.min(letterIndex, 9)];
 }
