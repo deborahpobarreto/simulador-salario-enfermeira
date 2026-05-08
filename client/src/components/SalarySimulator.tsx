@@ -209,12 +209,9 @@ export function SalarySimulator() {
                 <Select
                   value={input.cargo || "Enfermeiro"}
                   onValueChange={(value) => {
-                    const niveis = getCargoNiveis(value);
                     setInput({
                       ...input,
                       cargo: value,
-                      level: niveis?.nivelInicial || 13,
-                      letter: "A",
                     });
                   }}
                 >
