@@ -21,6 +21,7 @@ import {
 import { useSalaryCalculator, type SalaryCalculatorInput } from "@/hooks/useSalaryCalculator";
 import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { getCargosList, getCargoNiveis } from "@/../../shared/cargoData";
 
 interface SimulationHistory {
   id: string;
@@ -32,6 +33,7 @@ interface SimulationHistory {
 export function SalarySimulator() {
   const [yearsOfPreviousService, setYearsOfPreviousService] = useState(0);
   const [input, setInput] = useState<SalaryCalculatorInput>({
+    cargo: "Enfermeiro",
     level: 13,
     letter: "A",
     yearsOfPreviousService: 0,
@@ -120,6 +122,31 @@ export function SalarySimulator() {
     toast.success("Histórico limpo");
   };
 
+  const handleExportPDF = () => {
+    const element = document.getElementById("export-content");
+    if (!element) {
+      toast.error("Erro ao gerar PDF");
+      return;
+    }
+
+    const html2pdf = (window as any).html2pdf;
+    if (!html2pdf) {
+      toast.error("Biblioteca de PDF não carregada");
+      return;
+    }
+
+    const opt = {
+      margin: 10,
+      filename: `simulador-salario-${new Date().toISOString().split("T")[0]}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { orientation: "portrait", unit: "mm", format: "a4" },
+    };
+
+    html2pdf().set(opt).from(element).save();
+    toast.success("PDF gerado com sucesso!");
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="simulator" className="w-full">
@@ -177,6 +204,33 @@ export function SalarySimulator() {
               <CardDescription>Lei 19.313/2025 - Tabela de Vencimentos</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="space-y-2 mb-4">
+                <Label htmlFor="cargo">Cargo</Label>
+                <Select
+                  value={input.cargo || "Enfermeiro"}
+                  onValueChange={(value) => {
+                    const niveis = getCargoNiveis(value);
+                    setInput({
+                      ...input,
+                      cargo: value,
+                      level: niveis?.nivelInicial || 13,
+                      letter: "A",
+                    });
+                  }}
+                >
+                  <SelectTrigger id="cargo">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getCargosList().map((cargo) => (
+                      <SelectItem key={cargo} value={cargo}>
+                        {cargo}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="level">Nível (13-16)</Label>
@@ -683,6 +737,12 @@ export function SalarySimulator() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Férias com 1/3 (Art. 21): R$ {salary.vacationWithThirds.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    13º Salário: R$ {salary.thirteenthSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                  <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2">
+                    Impacto Anual: R$ {salary.annualImpact.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
                 </div>
 
                 {/* Seção de Descontos e Salário Líquido */}
@@ -723,10 +783,15 @@ export function SalarySimulator() {
                   </div>
                 </div>
 
-                <Button onClick={handleAddSimulation} className="w-full gap-2" size="lg">
-                  <Plus className="w-4 h-4" />
-                  Adicionar ao Histórico
-                </Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <Button onClick={handleAddSimulation} className="gap-2" size="lg">
+                    <Plus className="w-4 h-4" />
+                    Adicionar ao Histórico
+                  </Button>
+                  <Button onClick={handleExportPDF} variant="outline" className="gap-2" size="lg">
+                    Exportar PDF
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1033,6 +1098,120 @@ export function SalarySimulator() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Elemento oculto para exportação de PDF */}
+      <div id="export-content" style={{ display: "none" }}>
+        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+          <h1 style={{ textAlign: "center", marginBottom: "10px" }}>Simulador de Salário - Enfermagem</h1>
+          <p style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
+            Lei Complementar 323/2006 e Lei 19.313/2025
+          </p>
+
+          <h2 style={{ borderBottom: "2px solid #333", paddingBottom: "10px", marginTop: "20px" }}>Dados do Simulador</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
+            <tbody>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Cargo:</td>
+                <td style={{ padding: "8px" }}>{input.cargo || "Enfermeiro"}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Nível:</td>
+                <td style={{ padding: "8px" }}>{input.level}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Referência:</td>
+                <td style={{ padding: "8px" }}>{input.letter}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Tempo de Serviço Anterior:</td>
+                <td style={{ padding: "8px" }}>{yearsOfPreviousService} anos</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Tempo na Posição Atual:</td>
+                <td style={{ padding: "8px" }}>{input.yearsOfService} anos</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 style={{ borderBottom: "2px solid #333", paddingBottom: "10px", marginTop: "20px" }}>Salário Bruto Mensal</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
+            <tbody>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Vencimento Básico:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.basicSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Gratificação de Desempenho:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.performanceBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              {salary.triennialBonus > 0 && (
+                <tr style={{ borderBottom: "1px solid #ddd" }}>
+                  <td style={{ padding: "8px", fontWeight: "bold" }}>Adicional Trienal:</td>
+                  <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.triennialBonus.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+                </tr>
+              )}
+              <tr style={{ backgroundColor: "#f0f0f0", fontWeight: "bold", borderBottom: "2px solid #333" }}>
+                <td style={{ padding: "8px" }}>TOTAL BRUTO MENSAL:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.monthlyGrossSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 style={{ borderBottom: "2px solid #333", paddingBottom: "10px", marginTop: "20px" }}>Descontos</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
+            <tbody>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>INSS (11%):</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.inss.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>IRRF:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.irrf.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr style={{ backgroundColor: "#f0f0f0", fontWeight: "bold", borderBottom: "2px solid #333" }}>
+                <td style={{ padding: "8px" }}>TOTAL DE DESCONTOS:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.totalDeductions.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 style={{ borderBottom: "2px solid #333", paddingBottom: "10px", marginTop: "20px" }}>Salário Líquido</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
+            <tbody>
+              <tr style={{ backgroundColor: "#e8f5e9", fontWeight: "bold", fontSize: "18px", borderBottom: "2px solid #333" }}>
+                <td style={{ padding: "8px" }}>SALÁRIO LÍQUIDO MENSAL:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.netSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 style={{ borderBottom: "2px solid #333", paddingBottom: "10px", marginTop: "20px" }}>Impacto Anual</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
+            <tbody>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Salário Anual (12 meses):</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.annualGrossSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>13º Salário:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.thirteenthSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "8px", fontWeight: "bold" }}>Férias com 1/3:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.vacationWithThirds.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr style={{ backgroundColor: "#e3f2fd", fontWeight: "bold", fontSize: "16px", borderBottom: "2px solid #333" }}>
+                <td style={{ padding: "8px" }}>IMPACTO ANUAL TOTAL:</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>R$ {salary.annualImpact.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p style={{ marginTop: "30px", fontSize: "12px", color: "#999", textAlign: "center" }}>
+            Gerado em {new Date().toLocaleString("pt-BR")}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

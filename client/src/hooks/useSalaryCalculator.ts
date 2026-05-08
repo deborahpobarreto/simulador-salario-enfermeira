@@ -26,6 +26,7 @@ import { useMemo } from "react";
  */
 export interface SalaryCalculatorInput {
   // Identificação do cargo (Lei 19.313/2025)
+  cargo?: string; // Nome do cargo
   level: number; // 13-16 para Enfermeiro
   letter: string; // A-J
 
@@ -84,7 +85,9 @@ export interface SalaryCalculatorOutput {
   // Totalizadores
   monthlyGrossSalary: number;
   annualGrossSalary: number;
+  thirteenthSalary: number; // 13º salário
   vacationWithThirds: number;
+  annualImpact: number; // Salário anual + 13º + férias com 1/3
 
   // Descontos e Salário Líquido
   inss: number;
@@ -191,8 +194,14 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
 
     const annualGrossSalary = monthlyGrossSalary * 12;
 
+    // 13º salário (proporcional ao mês)
+    const thirteenthSalary = monthlyGrossSalary;
+
     // Férias com 1/3 (Art. 21)
     const vacationWithThirds = monthlyGrossSalary * VACATION_THIRD_PERCENTAGE;
+
+    // Impacto anual: salário anual + 13º + férias com 1/3
+    const annualImpact = annualGrossSalary + thirteenthSalary + vacationWithThirds;
 
     // Função para arredondar para 2 casas decimais
     const round = (value: number) => Math.round(value * 100) / 100;
@@ -218,7 +227,9 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
       salaryFamily: round(salaryFamily),
       monthlyGrossSalary: round(monthlyGrossSalary),
       annualGrossSalary: round(annualGrossSalary),
+      thirteenthSalary: round(thirteenthSalary),
       vacationWithThirds: round(vacationWithThirds),
+      annualImpact: round(annualImpact),
       inss,
       irrf,
       totalDeductions,
