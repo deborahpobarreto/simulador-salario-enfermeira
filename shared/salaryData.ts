@@ -26,10 +26,10 @@ export const SALARY_LEVELS: Record<string, string> = {
   "10": "Nível 10",
   "11": "Nível 11",
   "12": "Nível 12",
-  "13": "Nível 13 - Enfermeiro",
-  "14": "Nível 14 - Enfermeiro",
-  "15": "Nível 15 - Enfermeiro",
-  "16": "Nível 16 - Enfermeiro",
+  "13": "Nível 13",
+  "14": "Nível 14",
+  "15": "Nível 15",
+  "16": "Nível 16",
 };
 
 /**

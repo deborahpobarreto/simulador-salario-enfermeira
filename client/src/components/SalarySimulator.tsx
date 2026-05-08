@@ -209,9 +209,12 @@ export function SalarySimulator() {
                 <Select
                   value={input.cargo || "Enfermeiro"}
                   onValueChange={(value) => {
+                    const niveis = getCargoNiveis(value);
                     setInput({
                       ...input,
                       cargo: value,
+                      level: niveis?.nivelInicial || 13,
+                      letter: "A",
                     });
                   }}
                 >
@@ -230,7 +233,7 @@ export function SalarySimulator() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="level">Nível (13-16)</Label>
+                  <Label htmlFor="level">Nível</Label>
                   <Select
                     value={input.level.toString()}
                     onValueChange={(value) =>
