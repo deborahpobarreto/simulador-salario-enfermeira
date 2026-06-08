@@ -45,7 +45,6 @@ export function SalarySimulator() {
     plantaoHours: 0,
     sobreaviso: {
       hours: 0,
-      hourlyRate: 50,
       convoked: true,
     },
     insalubrity: "none",
@@ -551,22 +550,21 @@ export function SalarySimulator() {
                     />
                     <p className="text-xs text-gray-500">Máximo 200 horas/mês</p>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sobreavisoRate">Valor/Hora (R$)</Label>
-                    <Input
-                      id="sobreavisoRate"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={input.sobreaviso.hourlyRate}
-                      onChange={(e) =>
-                        setInput({
-                          ...input,
-                          sobreaviso: { ...input.sobreaviso, hourlyRate: parseFloat(e.target.value) || 0 },
-                        })
-                      }
-                      placeholder="50.00"
-                    />
+                  <div className="bg-green-50 dark:bg-green-950 p-3 rounded">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Valor/Hora (Art. 17)</p>
+                    <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                      {input.sobreaviso.convoked ? (
+                        <>
+                          R$ {((salary.basicSalary / 220) * 1.5).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">100% da hora-plantão (convocado)</p>
+                        </>
+                      ) : (
+                        <>
+                          R$ {((salary.basicSalary / 220) * 0.75).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">50% da hora-plantão (não convocado)</p>
+                        </>
+                      )}
+                    </p>
                   </div>
                 </div>
 

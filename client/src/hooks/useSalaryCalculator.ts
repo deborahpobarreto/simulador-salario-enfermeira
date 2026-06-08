@@ -50,8 +50,8 @@ export interface SalaryCalculatorInput {
   // Sobreaviso (Art. 17)
   sobreaviso: {
     hours: number; // Máximo 200/mês
-    hourlyRate: number;
-    convoked: boolean; // true = 100%, false = 50%
+    // Taxa calculada automaticamente: 100% ou 50% da hora-plantão
+    convoked: boolean; // true = 100% da hora-plantão, false = 50% da hora-plantão
   };
 
   // Insalubridade (Art. 12)
@@ -143,9 +143,9 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const plantaoTotal = input.plantaoHours * plantaoHourlyRate;
 
     // 7. Sobreaviso (Art. 17)
-    // 100% se convocado, 50% se não convocado
-    const sobreavisoPercentage = input.sobreaviso.convoked ? 1.0 : 0.5;
-    const sobreavisoTotal = input.sobreaviso.hours * input.sobreaviso.hourlyRate * sobreavisoPercentage;
+    // 100% da hora-plantão se convocado, 50% da hora-plantão se não convocado
+    const sobreavisoHourlyRate = input.sobreaviso.convoked ? plantaoHourlyRate : plantaoHourlyRate * 0.5;
+    const sobreavisoTotal = input.sobreaviso.hours * sobreavisoHourlyRate;
 
     // 8. Insalubridade (Art. 12)
     // Calculado sobre Nivel 9, Referencia A
