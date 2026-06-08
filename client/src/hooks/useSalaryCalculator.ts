@@ -138,8 +138,8 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const nighttimeAdditional = input.nighttimeHours * hourlyRate * NIGHTTIME_ADDITIONAL_PERCENTAGE;
 
     // 6. Hora-Plantão (Art. 16)
-    // 50% do valor/hora do vencimento básico
-    const plantaoHourlyRate = (basicSalary / 220) * 0.5; // 50% da hora base
+    // 150% do valor/hora do vencimento básico (valor integral + 50%)
+    const plantaoHourlyRate = (basicSalary / 220) * 1.5; // 150% da hora base
     const plantaoTotal = input.plantaoHours * plantaoHourlyRate;
 
     // 7. Sobreaviso (Art. 17)

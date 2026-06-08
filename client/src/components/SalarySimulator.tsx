@@ -514,9 +514,9 @@ export function SalarySimulator() {
                   <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded">
                     <p className="text-sm text-gray-600 dark:text-gray-400">Valor/Hora (Art. 16)</p>
                     <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                      R$ {((salary.basicSalary / 220) * 0.5).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      R$ {((salary.basicSalary / 220) * 1.5).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">50% do valor/hora do vencimento básico</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">150% do valor/hora do vencimento básico</p>
                   </div>
                 </div>
                 {input.plantaoHours > 0 && (
