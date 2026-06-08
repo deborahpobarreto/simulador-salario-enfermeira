@@ -43,7 +43,6 @@ export function SalarySimulator() {
     postGraduation: "none",
     nighttimeHours: 0,
     plantaoHours: 0,
-    plantaoHourlyRate: 50,
     sobreaviso: {
       hours: 0,
       hourlyRate: 50,
@@ -512,17 +511,12 @@ export function SalarySimulator() {
                       placeholder="0"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="plantaoRate">Valor/Hora (R$)</Label>
-                    <Input
-                      id="plantaoRate"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={input.plantaoHourlyRate}
-                      onChange={(e) => setInput({ ...input, plantaoHourlyRate: parseFloat(e.target.value) || 0 })}
-                      placeholder="50.00"
-                    />
+                  <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Valor/Hora (Art. 16)</p>
+                    <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                      R$ {((salary.basicSalary / 220) * 0.5).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">50% do valor/hora do vencimento básico</p>
                   </div>
                 </div>
                 {input.plantaoHours > 0 && (

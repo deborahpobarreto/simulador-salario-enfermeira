@@ -44,8 +44,8 @@ export interface SalaryCalculatorInput {
   nighttimeHours: number; // Horas entre 22h-06h
 
   // Hora-Plantão (Art. 16)
+  // Calculada automaticamente como 50% do valor/hora do vencimento básico
   plantaoHours: number;
-  plantaoHourlyRate: number;
 
   // Sobreaviso (Art. 17)
   sobreaviso: {
@@ -138,7 +138,9 @@ export function useSalaryCalculator(input: SalaryCalculatorInput): SalaryCalcula
     const nighttimeAdditional = input.nighttimeHours * hourlyRate * NIGHTTIME_ADDITIONAL_PERCENTAGE;
 
     // 6. Hora-Plantão (Art. 16)
-    const plantaoTotal = input.plantaoHours * input.plantaoHourlyRate;
+    // 50% do valor/hora do vencimento básico
+    const plantaoHourlyRate = (basicSalary / 220) * 0.5; // 50% da hora base
+    const plantaoTotal = input.plantaoHours * plantaoHourlyRate;
 
     // 7. Sobreaviso (Art. 17)
     // 100% se convocado, 50% se não convocado
