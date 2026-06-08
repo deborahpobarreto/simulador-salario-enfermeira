@@ -50,9 +50,9 @@ export const SALARY_LETTERS: Record<string, string> = {
 };
 
 /**
- * Lei Complementar 323/2006 - ANEXO III - Tabela de Vencimentos Básicos
- * Valores em R$ (conforme Lei Complementar 323/2006)
- * Estrutura: [Nível][Letra] = Vencimento Básico
+ * Lei Complementar 323/2006 - ANEXO III - Tabela de Vencimentos Médios
+ * Valores em R$ (valores médios que incluem vencimento básico + adicionais)
+ * Estrutura: [Nível][Letra] = Vencimento Médio Total
  */
 export const SALARY_TABLE: Record<string, Record<string, number>> = {
   "1": {

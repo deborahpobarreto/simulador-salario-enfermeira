@@ -32,6 +32,7 @@ interface SimulationHistory {
 
 export function SalarySimulator() {
   const [yearsOfPreviousService, setYearsOfPreviousService] = useState(0);
+  const [cargoFilter, setCargoFilter] = useState("");
   const [input, setInput] = useState<SalaryCalculatorInput>({
     cargo: "Enfermeiro",
     level: 13,
@@ -206,29 +207,43 @@ export function SalarySimulator() {
             <CardContent className="space-y-4">
               <div className="space-y-2 mb-4">
                 <Label htmlFor="cargo">Cargo</Label>
-                <Select
-                  value={input.cargo || "Enfermeiro"}
-                  onValueChange={(value) => {
-                    const niveis = getCargoNiveis(value);
-                    setInput({
-                      ...input,
-                      cargo: value,
-                      level: niveis?.nivelInicial || 13,
-                      letter: "A",
-                    });
-                  }}
-                >
-                  <SelectTrigger id="cargo">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getCargosList().map((cargo) => (
-                      <SelectItem key={cargo} value={cargo}>
-                        {cargo}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <Input
+                    id="cargo-filter"
+                    placeholder="Digite para buscar cargo..."
+                    value={cargoFilter}
+                    onChange={(e) => setCargoFilter(e.target.value)}
+                    className="mb-2"
+                  />
+                  <Select
+                    value={input.cargo || "Enfermeiro"}
+                    onValueChange={(value) => {
+                      const niveis = getCargoNiveis(value);
+                      setInput({
+                        ...input,
+                        cargo: value,
+                        level: niveis?.nivelInicial || 13,
+                        letter: "A",
+                      });
+                      setCargoFilter("");
+                    }}
+                  >
+                    <SelectTrigger id="cargo">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getCargosList()
+                        .filter((cargo) =>
+                          cargo.toLowerCase().includes(cargoFilter.toLowerCase())
+                        )
+                        .map((cargo) => (
+                          <SelectItem key={cargo} value={cargo}>
+                            {cargo}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

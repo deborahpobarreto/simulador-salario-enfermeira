@@ -15,10 +15,10 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Simulador de Salário - Enfermagem
+                Simulador de Salário
               </h1>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Lei 19.313/2025 - Progressão de Carreira
+                Lei 19.313/2025 - Tabela de Vencimentos
               </p>
             </div>
           </div>
